@@ -106,7 +106,7 @@ class BlazePoseDetector:
                 if np.isfinite(pixel_depth):
                     self.cmd.y = pixel_depth
                 else:
-                    rospy.logwarn("Profundidad no válida en el pixel detectado.")
+                    rospy.logwarn("Invalid pixel depth at: ({pixel_x}, {pixel_y})")
                     self.cmd.y = -1
             else:
                 self.cmd.y = -1
@@ -115,7 +115,7 @@ class BlazePoseDetector:
             
             #cv2.circle(img, (pixel_x, pixel_y), 5, (0, 0, 255), -1)
 
-            rospy.loginfo(f"Píxel central entre caderas: ({pixel_x}, {pixel_y}) a {pixel_depth} metros")
+            rospy.loginfo(f"Person detected in: ({pixel_x}, {pixel_y}) at {pixel_depth} meters")
             
             # Dibujar puntos clave en la imagen
             
@@ -131,9 +131,9 @@ class BlazePoseDetector:
             self.cmd = Point()
             self.cmd.x = -1
             self.cmd.y = -1
-            rospy.logwarn("No se detectó ninguna pose")
+            rospy.logwarn("NO PERSON DETECTED")
         
-        rospy.loginfo(f"Publicando: Error: {self.cmd.x}, Distancia: {self.cmd.y}")
+        rospy.loginfo(f"Publishing: Error: {self.cmd.x}, Distance: {self.cmd.y}")
             
         self.cmd_pub.publish(self.cmd)
         #cv2.imshow('Person Detection', depth_image)
@@ -141,6 +141,6 @@ class BlazePoseDetector:
         return image
 
 
-rospy.init_node('person_detector')
+rospy.init_node('Person_Detector')
 cd  = BlazePoseDetector()
 rospy.spin()       
