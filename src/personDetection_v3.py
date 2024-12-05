@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import rospy
 from sensor_msgs.msg import Image
 import cv_bridge
@@ -9,6 +11,7 @@ import mediapipe as mp
 import numpy as np
 import math
 from message_filters import ApproximateTimeSynchronizer, Subscriber
+
 class BlazePoseDetector:
     def __init__(self):
         # Inicializar MediaPipe Pose

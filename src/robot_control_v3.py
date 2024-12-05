@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import rospy
 
 from geometry_msgs.msg import Point, Twist
@@ -34,12 +36,12 @@ class RobotControl:
             twist = Twist()
             twist.linear.x = 0
 
-            if last_error > 0:
+            if self.last_error > 0:
                 twist.angular.z = -MAX_WSPEED 
-            elif last_error < 0:
+            elif self.last_error < 0:
                 twist.angular.z = MAX_WSPEED 
 
-            print(last_error)
+            
             rospy.loginfo(f"IDLE MOV: Speed: Linear X: {twist.linear.x:.2f}, Angular Z: {twist.angular.z:.2f}")
             self.cmd_vel_pub.publish(twist)
         # Verificar que el pixel esté dentro de los límites de la imagen

@@ -58,12 +58,12 @@ class GestureDetector:
         if self.simulation: 
             # Asegúrate de que la cámara se haya inicializado correctamente
             if not self.cap.isOpened():
-                print("Error: No se puede acceder a la cámara")
+                rospy.logerr("Error: Unable to open camera")
                 return
             ret, frame = self.cap.read()
             
             if not ret:
-                print("Error: No se puede leer el frame de la cámara")
+                rospy.logerr("Error: Unable to read camera")
                 return
             
         frame = cv2.flip(frame, 1)
