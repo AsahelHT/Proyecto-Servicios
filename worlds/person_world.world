@@ -252,7 +252,7 @@
           <geometry>
             <mesh>
               <scale>0.001 0.001 0.001</scale>
-              <uri>/home/asahel/tb2_ws/src/turtlebot2/turtlebot/turtlebot_description/meshes/stacks/hexagons/plate_simple.stl</uri>
+              <uri>model://stacks/hexagons/plate_simple.stl</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -274,7 +274,7 @@
           <geometry>
             <mesh>
               <scale>0.001 0.001 0.001</scale>
-              <uri>/home/asahel/tb2_ws/src/turtlebot2/turtlebot/turtlebot_description/meshes/stacks/hexagons/plate_simple.stl</uri>
+              <uri>model://stacks/hexagons/plate_simple.stl</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -648,7 +648,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/asahel/tb2_ws/src/kobuki_ros/kobuki/kobuki_description/meshes/main_body.dae</uri>
+              <uri>model://main_body.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -657,7 +657,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/asahel/tb2_ws/src/turtlebot2/turtlebot/turtlebot_description/meshes/sensors/xtion_pro_camera.dae</uri>
+              <uri>model://sensors/xtion_pro_camera.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -666,7 +666,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/asahel/tb2_ws/src/turtlebot2/turtlebot/turtlebot_description/meshes/sensors/xtion_pro_stack.dae</uri>
+              <uri>model://sensors/xtion_pro_stack.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -675,7 +675,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/asahel/tb2_ws/src/turtlebot2/turtlebot/turtlebot_description/meshes/stacks/hexagons/plate_bottom.dae</uri>
+              <uri>model://stacks/hexagons/plate_bottom.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -684,7 +684,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/asahel/tb2_ws/src/turtlebot2/turtlebot/turtlebot_description/meshes/stacks/hexagons/plate_middle.dae</uri>
+              <uri>model://stacks/hexagons/plate_middle.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -693,7 +693,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/asahel/tb2_ws/src/turtlebot2/turtlebot/turtlebot_description/meshes/stacks/hexagons/plate_top.dae</uri>
+              <uri>model://stacks/hexagons/plate_top.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -702,7 +702,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/asahel/tb2_ws/src/turtlebot2/turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_bottom.dae</uri>
+              <uri>model://stacks/hexagons/pole_bottom.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -711,7 +711,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/asahel/tb2_ws/src/turtlebot2/turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_bottom.dae</uri>
+              <uri>model://stacks/hexagons/pole_bottom.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -720,7 +720,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/asahel/tb2_ws/src/turtlebot2/turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_bottom.dae</uri>
+              <uri>model://stacks/hexagons/pole_bottom.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -729,7 +729,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/asahel/tb2_ws/src/turtlebot2/turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_bottom.dae</uri>
+              <uri>model://stacks/hexagons/pole_bottom.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -738,7 +738,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/asahel/tb2_ws/src/turtlebot2/turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_bottom.dae</uri>
+              <uri>model://stacks/hexagons/pole_bottom.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -747,7 +747,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/asahel/tb2_ws/src/turtlebot2/turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_bottom.dae</uri>
+              <uri>model://stacks/hexagons/pole_bottom.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -756,7 +756,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/asahel/tb2_ws/src/turtlebot2/turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_kinect.dae</uri>
+              <uri>model://stacks/hexagons/pole_kinect.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -765,7 +765,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/asahel/tb2_ws/src/turtlebot2/turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_kinect.dae</uri>
+              <uri>model://stacks/hexagons/pole_kinect.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -774,7 +774,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/asahel/tb2_ws/src/turtlebot2/turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_middle.dae</uri>
+              <uri>model://stacks/hexagons/pole_middle.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -783,7 +783,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/asahel/tb2_ws/src/turtlebot2/turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_middle.dae</uri>
+              <uri>model://stacks/hexagons/pole_middle.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -792,7 +792,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/asahel/tb2_ws/src/turtlebot2/turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_middle.dae</uri>
+              <uri>model://stacks/hexagons/pole_middle.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -801,7 +801,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/asahel/tb2_ws/src/turtlebot2/turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_middle.dae</uri>
+              <uri>model://stacks/hexagons/pole_middle.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -810,7 +810,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/asahel/tb2_ws/src/turtlebot2/turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_top.dae</uri>
+              <uri>model://stacks/hexagons/pole_top.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -819,7 +819,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/asahel/tb2_ws/src/turtlebot2/turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_top.dae</uri>
+              <uri>model://stacks/hexagons/pole_top.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -828,7 +828,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/asahel/tb2_ws/src/turtlebot2/turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_top.dae</uri>
+              <uri>model://stacks/hexagons/pole_top.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -837,7 +837,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/asahel/tb2_ws/src/turtlebot2/turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_top.dae</uri>
+              <uri>model://stacks/hexagons/pole_top.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1057,7 +1057,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/asahel/tb2_ws/src/kobuki_ros/kobuki/kobuki_description/meshes/wheel.dae</uri>
+              <uri>model://wheel.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1139,7 +1139,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/asahel/tb2_ws/src/kobuki_ros/kobuki/kobuki_description/meshes/wheel.dae</uri>
+              <uri>model://wheel.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1177,64 +1177,6 @@
       </plugin>
       <pose>0 0 0 0 -0 0</pose>
     </model>
-    <state world_name='default'>
-      <sim_time>56 541000000</sim_time>
-      <real_time>84 722838065</real_time>
-      <wall_time>1733485265 436236997</wall_time>
-      <iterations>35865</iterations>
-      <model name='ground_plane'>
-        <pose>0 0 0 0 -0 0</pose>
-        <scale>1 1 1</scale>
-        <link name='link'>
-          <pose>0 0 0 0 -0 0</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
-        </link>
-      </model>
-      <model name='mobile_base'>
-        <pose>8e-05 1.7e-05 -0.000341 -7.7e-05 -0.013761 0.001575</pose>
-        <scale>1 1 1</scale>
-        <link name='base_footprint'>
-          <pose>8e-05 1.7e-05 -0.000341 -7.7e-05 -0.013761 0.001575</pose>
-          <velocity>0.000206 2.4e-05 -0.000139 0.001073 -0.001853 -0.000108</velocity>
-          <acceleration>-0.019733 -0.044334 -0.531668 -0.211484 -0.388641 0.020157</acceleration>
-          <wrench>-0.092692 -0.20825 -2.4974 0 -0 0</wrench>
-        </link>
-        <link name='wheel_left_link'>
-          <pose>-0.000587 0.115018 0.034986 -1.57088 -0.018007 0.001576</pose>
-          <velocity>0.000153 -1.4e-05 -1.7e-05 0.001073 -0.001853 -0.000108</velocity>
-          <acceleration>-0.129458 -0.167869 -14.4796 2.196 1.53804 0.063509</acceleration>
-          <wrench>-0.001295 -0.001679 -0.144796 0 -0 0</wrench>
-        </link>
-        <link name='wheel_right_link'>
-          <pose>-0.000225 -0.114983 0.034995 -1.57088 -0.006908 0.001575</pose>
-          <velocity>0.000128 -1.4e-05 -0.000263 0.001073 -0.001853 -0.000108</velocity>
-          <acceleration>-0.097355 -0.086241 0.662557 2.88132 1.34136 -3.13729</acceleration>
-          <wrench>-0.000974 -0.000862 0.006626 0 -0 0</wrench>
-        </link>
-      </model>
-      <model name='person_walking'>
-        <pose>5.69559 0.093207 -1e-06 -2e-06 1e-06 0.000294</pose>
-        <scale>1 1 1</scale>
-        <link name='link'>
-          <pose>5.69559 0.093207 -1e-06 -2e-06 1e-06 0.000294</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0.962639 2.0299 -2.69517 -2.11727 1.05498 0.105535</acceleration>
-          <wrench>77.0111 162.392 -215.614 0 -0 0</wrench>
-        </link>
-      </model>
-      <light name='sun'>
-        <pose>0 0 10 0 -0 0</pose>
-      </light>
-    </state>
-    <gui fullscreen='0'>
-      <camera name='user_camera'>
-        <pose>11.2991 -9.64061 6.04685 0 0.495643 2.3482</pose>
-        <view_controller>orbit</view_controller>
-        <projection_type>perspective</projection_type>
-      </camera>
-    </gui>
     <model name='person_walking'>
       <link name='link'>
         <inertial>
@@ -1309,7 +1251,65 @@
           </ros>
         </plugin>
       </link>
-      <pose>4.58357 0.168111 0 0 -0 0</pose>
+      <pose>5.69559 0.093207 0 0 -0 0</pose>
     </model>
+    <state world_name='default'>
+      <sim_time>20 676000000</sim_time>
+      <real_time>47 970463904</real_time>
+      <wall_time>1733478686 322013885</wall_time>
+      <iterations>20676</iterations>
+      <model name='ground_plane'>
+        <pose>0 0 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>0 0 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='mobile_base'>
+        <pose>3.9e-05 5e-06 -0.000341 -9.1e-05 -0.013764 0.000529</pose>
+        <scale>1 1 1</scale>
+        <link name='base_footprint'>
+          <pose>3.9e-05 5e-06 -0.000341 -9.1e-05 -0.013764 0.000529</pose>
+          <velocity>-0.000158 0.000204 -0.000257 0.000821 0.001104 -0.000187</velocity>
+          <acceleration>0.01204 0.020694 -0.385107 -1.66446 0.186607 -0.772127</acceleration>
+          <wrench>0.056555 0.097205 -1.80896 0 -0 0</wrench>
+        </link>
+        <link name='wheel_left_link'>
+          <pose>-0.000508 0.115008 0.034992 -1.57089 -0.015296 0.00053</pose>
+          <velocity>-9.7e-05 0.000175 -0.000162 0.000821 0.001104 -0.000187</velocity>
+          <acceleration>0.161057 0.253389 1.3017 -1.87529 -1.31832 -0.724262</acceleration>
+          <wrench>0.001611 0.002534 0.013017 0 -0 0</wrench>
+        </link>
+        <link name='wheel_right_link'>
+          <pose>-0.000387 -0.114993 0.034987 -1.57089 -0.011199 0.00053</pose>
+          <velocity>-0.00014 0.000175 -0.000351 0.000821 0.001104 -0.000187</velocity>
+          <acceleration>0.059142 0.177661 -13.0105 0.377518 -0.734359 -0.710388</acceleration>
+          <wrench>0.000591 0.001777 -0.130105 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='person_walking'>
+        <pose>5.69559 0.093207 -1e-06 -2e-06 1e-06 0.000294</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>5.69559 0.093207 -1e-06 -2e-06 1e-06 0.000294</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0.962639 2.0299 -2.69517 -2.11727 1.05498 0.105535</acceleration>
+          <wrench>77.0111 162.392 -215.614 0 -0 0</wrench>
+        </link>
+      </model>
+      <light name='sun'>
+        <pose>0 0 10 0 -0 0</pose>
+      </light>
+    </state>
+    <gui fullscreen='0'>
+      <camera name='user_camera'>
+        <pose>11.2991 -9.64061 6.04685 0 0.495643 2.3482</pose>
+        <view_controller>orbit</view_controller>
+        <projection_type>perspective</projection_type>
+      </camera>
+    </gui>
   </world>
 </sdf>

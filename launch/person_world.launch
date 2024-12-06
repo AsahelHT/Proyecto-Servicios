@@ -1,6 +1,6 @@
 <launch>
 
-  <env name="GAZEBO_MODEL_PATH" value="$(find proyecto_servicios)/models" />
+  <env name="GAZEBO_MODEL_PATH" value="$(find proyecto_servicios)/models:$(find turtlebot_description)/meshes:$(find kobuki_description)/meshes" />
   <arg name="gui"        default="true"/>
   <arg name="world_file" default="$(find proyecto_servicios)/worlds/person_world.world"/>
   <arg name="extra_gazebo_args" default="--verbose"/>

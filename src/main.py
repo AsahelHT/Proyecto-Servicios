@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import rospy
 import smach_ros
 import math
@@ -6,6 +8,7 @@ from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from sensor_msgs.msg import LaserScan
 from std_msgs.msg import Int32, String
 from geometry_msgs.msg import Twist
+import follow_person 
 
 # Constantes
 TOPIC_VEL = "/cmd_vel"
@@ -15,6 +18,14 @@ TOPIC_COMMAND = '/robot_command'
 
 ANG_IZQ = 30 * math.pi / 180.0
 ANG_DER = -ANG_IZQ
+
+# Parámetros de control
+CENTER_TOLERANCE_X = 100  # Tolerancia en píxeles para el eje X
+TARGET_DISTANCE = 1.5  # Distancia deseada en metros
+LINEAR_GAIN = 0.5  # Ganancia para el control de la velocidad lineal
+ANGULAR_GAIN = 0.005  # Ganancia para el control de la velocidad angular
+MAX_VSPEED = 1
+MAX_WSPEED = 0.3
 
 # Estado: Patrullar
 class Patrol(State):
@@ -81,6 +92,7 @@ class WanderAndDetect(State):
     def color_detected_callback(self, msg):
         self.color_detected = True
 
+
 # Callback para cambiar de estado
 current_state = None
 
@@ -92,6 +104,8 @@ def command_callback(msg):
         sm.set_initial_state(['Patrol'])
     elif msg.data == "start_wander":
         sm.set_initial_state(['WanderAndDetect'])
+    elif msg.data == "start_follow":
+        sm.set_initial_state(['Follow'])
     elif msg.data == "stop":
         sm.request_preempt()
 

@@ -1,12 +1,7 @@
 #!/usr/bin/env python
 
 import rospy
-
 from geometry_msgs.msg import Point, Twist
-from sensor_msgs.msg import Image
-from cv_bridge import CvBridge
-import numpy as np
-import cv2
 
 # Parámetros de control
 CENTER_TOLERANCE_X = 100  # Tolerancia en píxeles para el eje X
@@ -82,7 +77,7 @@ class RobotControl:
             self.cmd_vel_pub.publish(twist)
 
     
-rospy.init_node("Robot_Control")
+rospy.init_node("Follow Person")
 rospy.loginfo("Robot Control node started. Waiting...")
 rc = RobotControl()
 rospy.spin()

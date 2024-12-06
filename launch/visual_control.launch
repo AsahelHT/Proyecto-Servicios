@@ -1,6 +1,6 @@
 <launch>
   <!-- Nodo para robot_control.py -->
-  <node name="robot_control" pkg="proyecto_servicios" type="robot_control.py" output="screen" respawn="false">
+  <node name="follow_person" pkg="proyecto_servicios" type="follow_person.py" output="screen" respawn="false">
     <param name="required" value="true"/>
   </node>
 
