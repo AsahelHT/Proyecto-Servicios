@@ -28,7 +28,7 @@ Este repositorio contiene el paquete de ROS proyecto_servicios para la asignatur
 ### Prerequisitos
 
 Estos son los siguientes requisitos que se necesitan para poder usar el paquete:
-1. ROS Noetic para Ubuntu: [http://wiki.ros.org/noetic/Installation/Ubuntu] (http://wiki.ros.org/noetic/Installation/Ubuntu)
+1. ROS Noetic para Ubuntu: [http://wiki.ros.org/noetic/Installation/Ubuntu](http://wiki.ros.org/noetic/Installation/Ubuntu)
 2. Turtlebot2: 
 Instalar el simulador de Turtlebot 2
 
@@ -58,8 +58,8 @@ Para descargar los fuentes de los diversos repositorios necesarios de manera aut
   catkin_make_isolated
   ```
 
-3. Workspace de catkin previamente creado: [http://wiki.ros.org/catkin/Tutorials/create_a_workspace] (http://wiki.ros.org/catkin/Tutorials/create_a_workspace)
-4. Gazebo: https://classic.gazebosim.org/tutorials?tut=install_ubuntu 
+3. Workspace de catkin previamente creado: [http://wiki.ros.org/catkin/Tutorials/create_a_workspace](http://wiki.ros.org/catkin/Tutorials/create_a_workspace)
+4. Gazebo: [https://classic.gazebosim.org/tutorials?tut=install_ubuntu](https://classic.gazebosim.org/tutorials?tut=install_ubuntu) 
 
 ### Instalación
 
