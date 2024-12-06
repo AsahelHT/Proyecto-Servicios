@@ -20,35 +20,6 @@
 -->
 
 
-
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
-</details>
-
-
-
 <!-- GETTING STARTED -->
 ## Introducción
 
@@ -123,11 +94,14 @@ Para usar este paquete es conveniente seguir estos pasos, cada uno en una termin
    ```sh
    roslaunch proyecto_servicios person_world.launch 
    ```
-2. Lanzar move_person.py, permite controlar el modelo de la persona en la simulación:
-  ```sh
-   rosrun proyecto_servicios move_person.py
+2. Lanzar nodos de control visual:
+   ```sh
+   roslaunch proyecto_servicios visual_control.launch
    ```
-3. Lanzar robot
+3. Enviar mensaje de "Start" al robot:
+   ```sh
+   rostopic pub /robot_command std_msgs/String "start_follow"
+   ```
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
