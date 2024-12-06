@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   sensor_msgs
   std_msgs
+  gazebo_ros
 )
 
 ## System dependencies are found with CMake's conventions
@@ -104,10 +105,8 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES proyecto_servicios
-#  CATKIN_DEPENDS geometry_msgs rospy sensor_msgs std_msgs
-#  DEPENDS system_lib
+  CATKIN_DEPENDS
+  gazebo_ros
 )
 
 ###########
@@ -186,12 +185,25 @@ include_directories(
 #   PATTERN ".svn" EXCLUDE
 # )
 
+install(DIRECTORY launch
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+
+install(DIRECTORY models
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+
+install(DIRECTORY worlds
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+
 ## Mark other files for installation (e.g. launch and bag files, etc.)
 # install(FILES
 #   # myfile1
 #   # myfile2
 #   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 # )
+
 
 #############
 ## Testing ##

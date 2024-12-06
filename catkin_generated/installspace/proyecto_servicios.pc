@@ -1,8 +1,0 @@
-prefix=/usr/local
-
-Name: proyecto_servicios
-Description: Description of proyecto_servicios
-Version: 1.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 
