@@ -12,11 +12,7 @@ import mediapipe as mp
 import numpy as np
 import math
 
-# /robot_command_follow
-KP_SPEED = 0.4
-MIN_SPEED = 0.1
-MAX_SPEED = 1
-SIDE_GAIN = 0.4         # value in %
+from main import TOPIC_COMMAND, START_DETECTION_CMD, STOP_DETECTION_CMD, TOPIC_RGBCAM, MOVE_CLOSER_CMD, MOVE_AWAY_CMD, RESET_DIST_CMD
 
 class GestureDetector:
 
@@ -32,26 +28,27 @@ class GestureDetector:
         self.mp_drawing = mp.solutions.drawing_utils
 
         self.image_sub = None      
-        self.cmd_pub = rospy.Publisher('/robot_command', String, queue_size=10)
+        self.cmd_pub = rospy.Publisher(TOPIC_COMMAND, String, queue_size=10)
 
-        rospy.Subscriber('/robot_command', String, self.follow_callback)
+        rospy.Subscriber(TOPIC_COMMAND, String, self.cmd_callback)
         
         rospy.loginfo("Gesture control waiting...")
 
-    def follow_callback(self, msg):
-        if msg.data == "start_follow" and not self.is_active:
+    def cmd_callback(self, msg):
+        if msg.data == START_DETECTION_CMD and not self.is_active:
             self.is_active = True
             if self.simulation:
                 self.cap = cv2.VideoCapture(0)
-            self.image_sub = rospy.Subscriber('/camera/rgb/image_raw', Image, self.image_callback)
-            rospy.loginfo("Visual control ON")
-        elif msg.data == "stop_follow" and self.is_active:
+            self.image_sub = rospy.Subscriber(TOPIC_RGBCAM, Image, self.image_callback)
+            rospy.loginfo("GESTURE CONTROL: Visual control ON")
+            
+        elif msg.data == STOP_DETECTION_CMD and self.is_active:
             self.is_active = False
             self.image_sub.unregister()
             if self.cap:
                 self.cap.release()
             cv2.destroyAllWindows()
-            rospy.loginfo("Visual control OFF")
+            rospy.loginfo("GESTURE CONTROL: Visual control OFF")
 
     def image_callback(self, msg):
         # Convierte el mensaje de imagen ROS a una imagen OpenCV
@@ -72,7 +69,7 @@ class GestureDetector:
 
         self.cmd = self.gesture_cntrl(frame)
 
-        if self.cmd != "uknown":
+        if self.cmd != "unknown":
             self.cmd_pub.publish(self.cmd)
 
     # GESTURE CONTROL
@@ -80,7 +77,7 @@ class GestureDetector:
         # Convierte la imagen a RGB (MediaPipe requiere RGB)
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         result = self.hands.process(rgb_frame)
-        gesture = "uknown"
+        gesture = "unknown"
         # Dibuja manos y detecta gestos específicos
         if result.multi_hand_landmarks:
             for hand_landmarks in result.multi_hand_landmarks:
@@ -91,59 +88,85 @@ class GestureDetector:
                 # gesture = self.recognize_gesture(hand_landmarks, rgb_frame)
                 gesture = self.detect_gestures(hand_landmarks)
                 
-                if gesture == "closer":
+                if gesture == MOVE_CLOSER_CMD:
                     print("Gesto detectado: v - Acercarse")
-                elif gesture == "away":
+                elif gesture == MOVE_AWAY_CMD:
                     print("Gesto detectado: ^ - Alejarse")
+                elif gesture == RESET_DIST_CMD:
+                    print("Gesto detectado: .|. - Reset")
 
         
         # Muestra el frame con las anotaciones (opcional)
-        #cv2.imshow('TurtleBot2 Gesture Detection', frame)
-        #cv2.waitKey(1)
+        cv2.imshow('TurtleBot2 Gesture Detection', frame)
+        cv2.waitKey(1)
 
         return gesture
 
 
     def detect_gestures(self, hand_landmarks):
-        gesture = "Unknown"
+        gesture = "unknown"
 
-        thumb_tip = hand_landmarks.landmark[self.mp_hands.HandLandmark.THUMB_TIP]
-        thumb_ip = hand_landmarks.landmark[self.mp_hands.HandLandmark.THUMB_IP]
-        thumb_mcp = hand_landmarks.landmark[self.mp_hands.HandLandmark.THUMB_MCP]
-        thumb_cmc = hand_landmarks.landmark[self.mp_hands.HandLandmark.THUMB_CMC]
-
-        index_tip = hand_landmarks.landmark[self.mp_hands.HandLandmark.INDEX_FINGER_TIP]
-        index_pip = hand_landmarks.landmark[self.mp_hands.HandLandmark.INDEX_FINGER_PIP]
-
-        middle_tip = hand_landmarks.landmark[self.mp_hands.HandLandmark.MIDDLE_FINGER_TIP]
-        middle_pip = hand_landmarks.landmark[self.mp_hands.HandLandmark.MIDDLE_FINGER_PIP]
-
-        ring_tip = hand_landmarks.landmark[self.mp_hands.HandLandmark.RING_FINGER_TIP]
-        ring_pip = hand_landmarks.landmark[self.mp_hands.HandLandmark.RING_FINGER_PIP]
-
-        pinky_tip = hand_landmarks.landmark[self.mp_hands.HandLandmark.PINKY_TIP]
-        pinky_pip = hand_landmarks.landmark[self.mp_hands.HandLandmark.PINKY_PIP]
+        INDEX = [8, 7, 6, 5]  # Índice
+        MIDDLE = [12, 11, 10, 9]  # Medio
+        RING = [16, 15, 14, 13]  # Anular
+        PINKY = [20, 19, 18, 17]  # Meñique
+        THUMB = [4, 3, 2, 1]  # Pulgar
 
         # Gesto "V" victoria
-        if (index_tip.y < hand_landmarks.landmark[self.mp_hands.HandLandmark.INDEX_FINGER_PIP].y and
-            middle_tip.y < hand_landmarks.landmark[self.mp_hands.HandLandmark.MIDDLE_FINGER_PIP].y and
-            ring_tip.y > hand_landmarks.landmark[self.mp_hands.HandLandmark.RING_FINGER_PIP].y and
-            pinky_tip.y > hand_landmarks.landmark[self.mp_hands.HandLandmark.PINKY_PIP].y):
 
-            gesture = "closer"
+        # Comprobar si el dedo medio está extendido
+        middle_extended = self.is_finger_extended_upwards(hand_landmarks.landmark, *MIDDLE)
+        index_extended = self.is_finger_extended_upwards(hand_landmarks.landmark, *INDEX)
+        # Comprobar si los demás dedos están recogidos
+        
+        ring_retracted = not self.is_finger_extended_upwards(hand_landmarks.landmark, *RING)
+        pinky_retracted = not self.is_finger_extended_upwards(hand_landmarks.landmark, *PINKY)
+        thumb_retracted = hand_landmarks.landmark[THUMB[0]].x > hand_landmarks.landmark[THUMB[3]].x
 
-         # Condiciones para gesto "V" invertido
-        index_down = index_tip.y > index_pip.y  # Índice apuntando hacia abajo
-        middle_down = middle_tip.y > middle_pip.y  # Medio apuntando hacia abajo
-        ring_folded = ring_tip.y < ring_pip.y  # Anular doblado
-        pinky_folded = pinky_tip.y < pinky_pip.y  # Meñique doblado
+        if middle_extended and index_extended and ring_retracted and pinky_retracted:
+            gesture = MOVE_CLOSER_CMD
+            return gesture
+        
+        # Gesto "^" victoria
+        
+        # Comprobar si el dedo medio está extendido
+        middle_extended = self.is_finger_extended_downwards(hand_landmarks.landmark, *MIDDLE)
+        index_extended = self.is_finger_extended_downwards(hand_landmarks.landmark, *INDEX)
+        # Comprobar si los demás dedos están recogidos
+        
+        ring_retracted = not self.is_finger_extended_downwards(hand_landmarks.landmark, *RING)
+        pinky_retracted = not self.is_finger_extended_downwards(hand_landmarks.landmark, *PINKY)
+        thumb_retracted = hand_landmarks.landmark[THUMB[0]].x > hand_landmarks.landmark[THUMB[3]].x
 
-        if index_down and middle_down and ring_folded and pinky_folded:
-            gesture = "away"
+        if middle_extended and index_extended and ring_retracted and pinky_retracted:
+            gesture = MOVE_AWAY_CMD
+            return gesture
+        
+        # Comprobar si el dedo medio está extendido
+        middle_extended = self.is_finger_extended_upwards(hand_landmarks.landmark, *MIDDLE)
+        
+        # Comprobar si los demás dedos están recogidos
+        index_retracted = not self.is_finger_extended_upwards(hand_landmarks.landmark, *INDEX)
+        ring_retracted = not self.is_finger_extended_upwards(hand_landmarks.landmark, *RING)
+        pinky_retracted = not self.is_finger_extended_upwards(hand_landmarks.landmark, *PINKY)
+        thumb_retracted = hand_landmarks.landmark[THUMB[0]].x > hand_landmarks.landmark[THUMB[3]].x
 
-        print(gesture)
-        return gesture
+        if middle_extended and index_retracted and ring_retracted and pinky_retracted:
+            gesture = RESET_DIST_CMD
+            return gesture
    
+    def is_finger_extended_upwards(self, landmarks, tip, dip, pip, mcp):
+        """
+        Determina si un dedo específico está extendido basado en las posiciones de sus landmarks.
+        """
+        return landmarks[tip].y < landmarks[dip].y < landmarks[pip].y < landmarks[mcp].y
+    
+    def is_finger_extended_downwards(self, landmarks, tip, dip, pip, mcp):
+        """
+        Determina si un dedo específico está extendido basado en las posiciones de sus landmarks.
+        """
+        return landmarks[tip].y > landmarks[dip].y > landmarks[pip].y > landmarks[mcp].y
+    
 rospy.init_node('gesture_detector')
 cd  = GestureDetector()
 rospy.spin()       

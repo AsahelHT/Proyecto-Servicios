@@ -13,6 +13,9 @@ import numpy as np
 import math
 from message_filters import ApproximateTimeSynchronizer, Subscriber
 
+from main import TOPIC_PERSONPOSE, TOPIC_COMMAND, START_DETECTION_CMD, STOP_DETECTION_CMD, TOPIC_RGBCAM, TOPIC_DEPTHCAM
+
+
 class BlazePoseDetector:
     def __init__(self):
         # Inicializar MediaPipe Pose
@@ -31,9 +34,9 @@ class BlazePoseDetector:
 
         self.image_sub = None   
         self.depth_sub = None   
-        self.cmd_pub = rospy.Publisher('/person_pose', Point, queue_size=1)
+        self.cmd_pub = rospy.Publisher(TOPIC_PERSONPOSE, Point, queue_size=10)
 
-        rospy.Subscriber('/robot_command', String, self.handler_callback)
+        rospy.Subscriber(TOPIC_COMMAND, String, self.handler_callback)
         
         rospy.loginfo("Person detection waiting...")
 
@@ -42,28 +45,28 @@ class BlazePoseDetector:
             THIS METHOD HANDLES WHENEVER THIS NODE MUST BE SUSCRIBED TO IMAGE TOPICS OR NOT
             AND HANDLES THE VISUAL CONTROL 
         """
-        if msg.data == "start_follow" and not self.is_active:
+        if msg.data == START_DETECTION_CMD and not self.is_active:
             self.is_active = True
 
             if self.simulation:
                 self.cap = cv2.VideoCapture(0)
 
-            self.image_sub = Subscriber('/camera/rgb/image_raw', Image)
-            self.depth_sub = Subscriber("/camera/depth/image_raw", Image)
+            self.image_sub = Subscriber(TOPIC_RGBCAM, Image)
+            self.depth_sub = Subscriber(TOPIC_DEPTHCAM, Image)
 
             # Sincronización aproximada de mensajes
             ats = ApproximateTimeSynchronizer([self.image_sub, self.depth_sub], queue_size=1, slop=0.5)
             ats.registerCallback(self.callback)
-            rospy.loginfo("Visual control ON")
+            rospy.loginfo("PERSON DETECTION: Visual control ON")
 
-        elif msg.data == "stop_follow" and self.is_active:
+        elif msg.data == STOP_DETECTION_CMD and self.is_active:
             self.is_active = False
             self.image_sub.unregister()
             self.depth_sub.unregister()
             if self.cap:
                 self.cap.release()
-            cv2.destroyAllWindows()
-            rospy.loginfo("Visual control OFF")
+            #cv2.destroyAllWindows()
+            rospy.loginfo("PERSON DETECTION: Visual control OFF")
 
     def callback(self, rgb_msg, depth_msg):
         rgb_image = self.bridge.imgmsg_to_cv2(rgb_msg, desired_encoding="bgr8")
@@ -110,7 +113,7 @@ class BlazePoseDetector:
                 if np.isfinite(pixel_depth):
                     self.cmd.y = pixel_depth
                 else:
-                    rospy.logwarn("Invalid pixel depth at: ({pixel_x}, {pixel_y})")
+                    #rospy.logwarn("Invalid pixel depth at: ({pixel_x}, {pixel_y})")
                     self.cmd.y = -1
             else:
                 self.cmd.y = -1
@@ -119,7 +122,7 @@ class BlazePoseDetector:
             
             #cv2.circle(img, (pixel_x, pixel_y), 5, (0, 0, 255), -1)
 
-            rospy.loginfo(f"Person detected in: ({pixel_x}, {pixel_y}) at {pixel_depth} meters")
+            #rospy.loginfo(f"Person detected in: ({pixel_x}, {pixel_y}) at {pixel_depth} meters")
             
             # Dibujar puntos clave en la imagen
             
@@ -135,9 +138,9 @@ class BlazePoseDetector:
             self.cmd = Point()
             self.cmd.x = -1
             self.cmd.y = -1
-            rospy.logwarn("NO PERSON DETECTED")
+            #rospy.logwarn("NO PERSON DETECTED")
         
-        rospy.loginfo(f"Publishing: Error: {self.cmd.x}, Distance: {self.cmd.y}")
+        #rospy.loginfo(f"Publishing: Error: {self.cmd.x}, Distance: {self.cmd.y}")
             
         self.cmd_pub.publish(self.cmd)
         #cv2.imshow('Person Detection', depth_image)
