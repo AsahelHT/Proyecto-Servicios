@@ -22,8 +22,8 @@ class BlazePoseDetector:
         self.mp_pose = mp.solutions.pose
         self.pose = self.mp_pose.Pose(static_image_mode=False,  # Para detección en tiempo real
                                       model_complexity=0,       # Modelo estándar
-                                      min_detection_confidence=0.2,
-                                      min_tracking_confidence=0.2)
+                                      min_detection_confidence=0.7,
+                                      min_tracking_confidence=0.7)
         self.mp_drawing = mp.solutions.drawing_utils
         self.mp_drawing_styles = mp.solutions.drawing_styles
 
@@ -126,14 +126,14 @@ class BlazePoseDetector:
             
             # Dibujar puntos clave en la imagen
             
-            """
+            
             self.mp_drawing.draw_landmarks(
                 image,
                 results.pose_landmarks,
                 self.mp_pose.POSE_CONNECTIONS,
                 landmark_drawing_spec=self.mp_drawing_styles.get_default_pose_landmarks_style()
             )
-            """
+            
         else:
             self.cmd = Point()
             self.cmd.x = -1
@@ -143,7 +143,7 @@ class BlazePoseDetector:
         #rospy.loginfo(f"Publishing: Error: {self.cmd.x}, Distance: {self.cmd.y}")
             
         self.cmd_pub.publish(self.cmd)
-        #cv2.imshow('Person Detection', depth_image)
+        #cv2.imshow('Person Detection', image)
         #cv2.waitKey(1)
         return image
 

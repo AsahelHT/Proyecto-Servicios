@@ -12,6 +12,7 @@ import pyttsx3
 import time
 from scipy.signal import resample
 
+from main import FOLLOW_ST, STOP_FOLLOW_CMD, SHUTDOWN_ST, MOVE_ST, BASE_ST, TOPIC_COMMAND, TOPIC_LOGS
 # Configuración del sintetizador de voz
 engine = pyttsx3.init()
 engine.setProperty('rate', 150)  # Velocidad del habla
@@ -19,8 +20,8 @@ engine.setProperty('volume', 1.0)  # Volumen
 
 # Inicializa ROS y configura el topic
 rospy.init_node('robot_voice_interface', anonymous=True)
-log_pub = rospy.Publisher('/robot_logs', String, queue_size=10)
-command_pub = rospy.Publisher('/robot_command', String, queue_size=10)
+log_pub = rospy.Publisher(TOPIC_LOGS, String, queue_size=10)
+command_pub = rospy.Publisher(TOPIC_COMMAND, String, queue_size=10)
 
 # Función para publicar, imprimir y sintetizar mensajes
 def log_and_speak(message):
@@ -72,7 +73,6 @@ def reconocer_comando(timeout=30):
         if recognizer.AcceptWaveform(data.tobytes()):
             result = json.loads(recognizer.Result())
             texto = result.get("text", "").lower()
-            log_and_speak(f"Texto reconocido: {texto}")
             return texto
 
         if time.time() - start_time > timeout:
@@ -95,22 +95,23 @@ def main():
 
                         if "sígueme" in comando_especifico:
                             log_and_speak("De acuerdo, te sigo.")
-                            command_pub.publish("start_follow")
+                            command_pub.publish(FOLLOW_ST)
                         elif "quédate aquí" in comando_especifico:
                             log_and_speak("De acuerdo, me quedo quieto.")
-                            command_pub.publish("stop_follow")
+                            command_pub.publish(STOP_FOLLOW_CMD)
                         elif "ve a la cocina" in comando_especifico:
                             log_and_speak("De acuerdo, me dirijo a la cocina.")
-                            command_pub.publish("go_to")
+                            command_pub.publish(MOVE_ST)
                         elif "vuelve a la estación" in comando_especifico:
                             log_and_speak("De acuerdo, me dirijo a la estación de carga.")
-                            command_pub.publish("back_station")
+                            command_pub.publish(BASE_ST)
                         elif "adiós" in comando_especifico:
                             log_and_speak("Adiós")
-                            command_pub.publish("goodbye")
+                            command_pub.publish(SHUTDOWN_ST)
                             return
                         else:
-                            log_and_speak("Comando no reconocido.")
+                            rospy.loginfo("Comando no reconocido.")
+                            log_pub.publish("Comando no reconocido.")
                 elif "adiós" in comando_activacion:
                     log_and_speak("Saliendo del programa.")
                     break

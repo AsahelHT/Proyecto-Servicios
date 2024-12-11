@@ -14,8 +14,4 @@
     <param name="required" value="true"/>
   </node>
 
-  <!-- Nodo para move_person.py -->
-  <node name="hand_control" pkg="proyecto_servicios" type="hand_control.py" output="screen" respawn="false">
-    <param name="required" value="true"/>
-  </node>
 </launch>

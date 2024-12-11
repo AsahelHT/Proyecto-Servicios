@@ -19,7 +19,7 @@ class GestureDetector:
     def __init__(self):
         self.bridge = cv_bridge.CvBridge()
         self.is_active = False
-        self.simulation = True
+        self.simulation = False
         self.cmd = None
 
         # Inicialización de MediaPipe para detección de manos
@@ -97,8 +97,8 @@ class GestureDetector:
 
         
         # Muestra el frame con las anotaciones (opcional)
-        cv2.imshow('TurtleBot2 Gesture Detection', frame)
-        cv2.waitKey(1)
+        #cv2.imshow('TurtleBot2 Gesture Detection', frame)
+        #cv2.waitKey(1)
 
         return gesture
 

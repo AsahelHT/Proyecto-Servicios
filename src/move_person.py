@@ -61,10 +61,7 @@ def move_object():
 
         # Enviar el estado al simulador
         response = set_model_state(state_msg)
-        if response.success:
-            rospy.loginfo(f"El modelo se movió a: x={position['x']}, y={position['y']}, z={position['z']}")
-        else:
-            rospy.logerr(f"Error al mover el modelo: {response.status_message}")
+        
     except rospy.ServiceException as e:
         rospy.logerr(f"Error al llamar al servicio: {e}")
 
