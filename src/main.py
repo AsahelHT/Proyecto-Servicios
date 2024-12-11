@@ -60,17 +60,17 @@ BASE_ST = "base_state"
 
 # Parámetros de control
 CENTER_TOLERANCE_X = 100  # Tolerancia en píxeles para el eje X
-TARGET_DISTANCE = 1500  # Distancia deseada en metros
+TARGET_DISTANCE = 1.5  # Distancia deseada en metros
 LINEAR_GAIN = 0.5  # Ganancia para el control de la velocidad lineal
 ANGULAR_GAIN = 0.005  # Ganancia para el control de la velocidad angular
 MAX_VSPEED = 0.5
 MAX_WSPEED = 0.3
 
-states = [IDLE_ST, FOLLOW_ST, MOVE_ST, SHUTDOWN_ST]
+states = [IDLE_ST, FOLLOW_ST, MOVE_ST, SHUTDOWN_ST, BASE_ST]
 
 # Definir los waypoints a los que el robot debe moverse
 waypoints = [
-    ['cocina', (2.1, 2.2), (0.0, 0.0, 0.0, 1.0)],  # Nombre, posición, orientación
+    ['cocina', (0, -2.2), (0.0, 0.0, 0.0, 1.0)],  # Nombre, posición, orientación
     ['estacion', (6.5, 4.43), (0.0, 0.0, -0.984047240305, 0.177907360295)]  # Ejemplo con otro punto
 ]
 
@@ -80,8 +80,8 @@ waypoints = [
 class MoveState(State):
     def __init__(self):
         State.__init__(self, outcomes=['succeeded', 'aborted', 'preempted'], input_keys=['input_data'])
-        #self.client = actionlib.SimpleActionClient('/move_base', MoveBaseAction)
-        #self.client.wait_for_server()
+        self.client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
+        self.client.wait_for_server()
 
     def execute(self, userdata):
         # Obtener el waypoint a mover
@@ -283,6 +283,7 @@ def main():
                 IDLE_ST:'IdleWait',
                 FOLLOW_ST:'FollowPerson',
                 MOVE_ST:'MoveState',
+                BASE_ST:'MoveState',
                 SHUTDOWN_ST:'end'},
             remapping={'input_data':'data',
                        'output_data':'data'})
