@@ -53,7 +53,7 @@ class GestureDetector:
     def image_callback(self, msg):
         # Convierte el mensaje de imagen ROS a una imagen OpenCV
         frame = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
-
+        
         if self.simulation: 
             # Asegúrate de que la cámara se haya inicializado correctamente
             if not self.cap.isOpened():
