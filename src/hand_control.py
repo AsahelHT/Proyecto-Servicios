@@ -12,14 +12,16 @@ import mediapipe as mp
 import numpy as np
 import math
 
-from main import TOPIC_COMMAND, START_DETECTION_CMD, STOP_DETECTION_CMD, TOPIC_RGBCAM, MOVE_CLOSER_CMD, MOVE_AWAY_CMD, RESET_DIST_CMD
+from main import TOPIC_COMMAND, START_DETECTION_CMD, STOP_DETECTION_CMD, TOPIC_RGBCAM, MOVE_CLOSER_CMD, MOVE_AWAY_CMD, RESET_DIST_CMD, STOP_FOLLOW_CMD
 
 class GestureDetector:
 
     def __init__(self):
         self.bridge = cv_bridge.CvBridge()
         self.is_active = False
-        self.simulation = False
+
+        self.simulation = rospy.get_param('~sim', False)
+        self.simulation = True
         self.cmd = None
 
         # Inicialización de MediaPipe para detección de manos
@@ -82,7 +84,8 @@ class GestureDetector:
         if result.multi_hand_landmarks:
             for hand_landmarks in result.multi_hand_landmarks:
                 # Dibuja puntos clave y conexiones de la mano en el frame
-                self.mp_drawing.draw_landmarks(frame, hand_landmarks, self.mp_hands.HAND_CONNECTIONS)
+                if self.simulation:
+                    self.mp_drawing.draw_landmarks(frame, hand_landmarks, self.mp_hands.HAND_CONNECTIONS)
                 
                 # Detecta el gesto usando los puntos clave de la mano
                 # gesture = self.recognize_gesture(hand_landmarks, rgb_frame)
@@ -92,13 +95,16 @@ class GestureDetector:
                     print("Gesto detectado: v - Acercarse")
                 elif gesture == MOVE_AWAY_CMD:
                     print("Gesto detectado: ^ - Alejarse")
+                elif gesture == STOP_FOLLOW_CMD:
+                    print("Gesto detectado: .|. - Dejar de seguir")
                 elif gesture == RESET_DIST_CMD:
-                    print("Gesto detectado: .|. - Reset")
+                    print("Gesto detectado: O - Reset distance")
 
         
         # Muestra el frame con las anotaciones (opcional)
-        #cv2.imshow('TurtleBot2 Gesture Detection', frame)
-        #cv2.waitKey(1)
+        if self.simulation:
+            cv2.imshow('TurtleBot2 Gesture Detection', frame)
+            cv2.waitKey(1)
 
         return gesture
 
@@ -112,7 +118,9 @@ class GestureDetector:
         PINKY = [20, 19, 18, 17]  # Meñique
         THUMB = [4, 3, 2, 1]  # Pulgar
 
-        # Gesto "V" victoria
+        """
+        Gesto victoria "V" (ACERCARSE)
+        """
 
         # Comprobar si el dedo medio está extendido
         middle_extended = self.is_finger_extended_upwards(hand_landmarks.landmark, *MIDDLE)
@@ -127,7 +135,9 @@ class GestureDetector:
             gesture = MOVE_CLOSER_CMD
             return gesture
         
-        # Gesto "^" victoria
+        """
+        Gesto victoria invertido (ALEJARSE)
+        """
         
         # Comprobar si el dedo medio está extendido
         middle_extended = self.is_finger_extended_downwards(hand_landmarks.landmark, *MIDDLE)
@@ -142,6 +152,10 @@ class GestureDetector:
             gesture = MOVE_AWAY_CMD
             return gesture
         
+        """
+        Gesto dejar de seguir .|. (DEJAR DE SEGUIR)
+        """
+
         # Comprobar si el dedo medio está extendido
         middle_extended = self.is_finger_extended_upwards(hand_landmarks.landmark, *MIDDLE)
         
@@ -152,8 +166,34 @@ class GestureDetector:
         thumb_retracted = hand_landmarks.landmark[THUMB[0]].x > hand_landmarks.landmark[THUMB[3]].x
 
         if middle_extended and index_retracted and ring_retracted and pinky_retracted:
+            gesture = STOP_FOLLOW_CMD
+            return gesture
+        
+        """
+        Gesto dejar de seguir O (RESET)
+        """
+
+        thumb_tip = hand_landmarks.landmark[THUMB[0]]
+        index_tip = hand_landmarks.landmark[INDEX[0]]
+        
+        # Calcular la distancia entre la punta del pulgar y la punta del índice
+        thumb_index_distance = self.calculate_distance(thumb_tip, index_tip)
+
+        # Verificar que los otros dedos no interfieran con el gesto
+        middle_extended = self.is_finger_extended_upwards(hand_landmarks.landmark, *MIDDLE)
+        ring_extended = self.is_finger_extended_upwards(hand_landmarks.landmark, *RING)
+        pinky_extended = self.is_finger_extended_upwards(hand_landmarks.landmark, *PINKY)
+
+        # Si la distancia entre el pulgar y el índice es pequeña y los otros dedos están recogidos
+        if thumb_index_distance < 0.05 and middle_extended and ring_extended and pinky_extended:
             gesture = RESET_DIST_CMD
             return gesture
+
+    def calculate_distance(self, point1, point2):
+        """
+        Calcula la distancia euclidiana entre dos puntos.
+        """
+        return ((point1.x - point2.x) ** 2 + (point1.y - point2.y) ** 2 + (point1.z - point2.z) ** 2) ** 0.5
    
     def is_finger_extended_upwards(self, landmarks, tip, dip, pip, mcp):
         """
@@ -170,41 +210,3 @@ class GestureDetector:
 rospy.init_node('gesture_detector')
 cd  = GestureDetector()
 rospy.spin()       
-
-
-"""
-def recognize_gesture(self, hand_landmarks, frame):
-        # Extrae las coordenadas de puntos clave del pulgar y el índice
-        wrist = hand_landmarks.landmark[self.mp_hands.HandLandmark.WRIST]
-        index_tip = hand_landmarks.landmark[self.mp_hands.HandLandmark.INDEX_FINGER_TIP]
-        index_dip = hand_landmarks.landmark[self.mp_hands.HandLandmark.INDEX_FINGER_DIP]
-        index_pip = hand_landmarks.landmark[self.mp_hands.HandLandmark.INDEX_FINGER_PIP]
-        index_mcp = hand_landmarks.landmark[self.mp_hands.HandLandmark.INDEX_FINGER_MCP]
-
-        # Convertir las coordenadas normalizadas a píxeles
-        h, w, _ = frame.shape
-        wrist_px = (int(wrist.x * w), int(wrist.y * h))
-        index_tip_px = (int(index_tip.x * w), int(index_tip.y * h))
-        index_pip_px = (int(index_pip.x * w), int(index_pip.y * h))
-        dist_tip = self.calc_dist(wrist_px, index_tip_px)
-        dist_pip = self.calc_dist(wrist_px, index_pip_px)
-        # Detecta gestos básicos: "mano abierta" o "puño cerrado"
-        
-        #print("Tip: ", abs(index_tip.z), " dip: ", abs(index_dip.z), " pip: ", abs(index_pip.z), " mcp: ", abs(index_mcp.z), " wrist: ", abs(wrist.z))
-        
-        dist_media = (abs(index_tip.z) + abs(index_dip.z) + abs(index_pip.z) + abs(index_mcp.z) + abs(index_mcp.z) + abs(wrist.z)) / 6
-        print("Dist media: ", dist_media)
-        if dist_media > 0.1:
-            if abs(index_tip.z) > abs(index_dip.z) and abs(index_dip.z) > abs(index_pip.z) and abs(index_pip.z) > abs(index_mcp.z) and abs(index_mcp.z) > abs(wrist.z):
-                print("Pointing")
-                self.pointing = True
-                return "pointing"
-
-        if self.pointing:
-            if dist_tip > dist_pip:
-                self.pointing == False
-                return "mano_abierta"
-            else:
-                self.pointing == False
-                return "puño_cerrado"
-"""

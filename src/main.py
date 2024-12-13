@@ -68,7 +68,7 @@ ANGULAR_GAIN = 0.001  # Ganancia para el control de la velocidad angular
 MAX_VSPEED = 0.2
 MAX_WSPEED = 0.3
 
-states = [IDLE_ST, FOLLOW_ST, MOVE_ST, SHUTDOWN_ST, BASE_ST]
+states = [IDLE_ST, FOLLOW_ST, MOVE_ST, SHUTDOWN_ST]
 
 # Definir los waypoints a los que el robot debe moverse
 waypoints = [
@@ -82,48 +82,48 @@ waypoints = [
 class MoveState(State):
     def __init__(self):
         State.__init__(self, outcomes=['succeeded', 'aborted', 'preempted'], input_keys=['input_data'])
-        #self.client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
-        #self.client.wait_for_server()
+        self.clientAvailable = True
+        self.client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
+        # Espera un máximo de 10 segundos para que el servidor esté disponible
+        if not self.client.wait_for_server(timeout=rospy.Duration(2)):
+            self.clientAvailable = False
+            rospy.logerr("El servidor 'move_base' no está disponible.")
+        
+            
 
     def execute(self, userdata):
         # Obtener el waypoint a mover
         
-        waypoint_name = None
-
-        if userdata.input_data == MOVE_ST:
-            waypoint_name = 'cocina'
-        elif userdata.input_data == BASE_ST:
-            waypoint_name = 'estacion'
-
-        print(waypoint_name)
-                
-        if waypoint_name is None:
-            return 'aborted'
-
+        waypoint_name = userdata.input_data
+        waypoint = None
         waypoint = next((w for w in waypoints if w[0] == waypoint_name), None)
-        #waypoint in enumerate(waypoints)
-
-        goal_pose = MoveBaseGoal()
-        goal_pose.target_pose.header.frame_id = 'map'
-        goal_pose.target_pose.pose.position.x = waypoint[1][0]
-        goal_pose.target_pose.pose.position.y = waypoint[1][1]
-        goal_pose.target_pose.pose.position.z = 0.0
-        goal_pose.target_pose.pose.orientation.x = waypoint[2][0]
-        goal_pose.target_pose.pose.orientation.y = waypoint[2][1]
-        goal_pose.target_pose.pose.orientation.z = waypoint[2][2]
-        goal_pose.target_pose.pose.orientation.w = waypoint[2][3]
-
         
-        self.client.send_goal(goal_pose)
-        self.client.wait_for_result()
-       
-        if self.client.get_state() == actionlib.GoalStatus.SUCCEEDED:
-            print('Ok')
-            return 'succeeded'
-        else:
-            print('Mal')
+        if waypoint == None:
             return 'aborted'
-               
+                       
+        #waypoint in enumerate(waypoints)
+        
+        if self.clientAvailable:
+            goal_pose = MoveBaseGoal()
+            goal_pose.target_pose.header.frame_id = 'map'
+            goal_pose.target_pose.pose.position.x = waypoint[1][0]
+            goal_pose.target_pose.pose.position.y = waypoint[1][1]
+            goal_pose.target_pose.pose.position.z = 0.0
+            goal_pose.target_pose.pose.orientation.x = waypoint[2][0]
+            goal_pose.target_pose.pose.orientation.y = waypoint[2][1]
+            goal_pose.target_pose.pose.orientation.z = waypoint[2][2]
+            goal_pose.target_pose.pose.orientation.w = waypoint[2][3]
+
+            
+            self.client.send_goal(goal_pose)
+            self.client.wait_for_result()
+        
+            if self.client.get_state() == actionlib.GoalStatus.SUCCEEDED:
+                return 'succeeded'
+            else:
+                return 'aborted'
+        else:
+            return 'aborted'
         
 """ ******************************************************************************************************
    Clase para el estado de seguimiento de personas.
@@ -132,7 +132,7 @@ class FollowPerson(State):
     def __init__(self):
         global states
         self.states = [state for state in states if state != FOLLOW_ST]
-        State.__init__(self, outcomes=[HANDLE_ST, FOLLOW_ST], input_keys=['input_data'], output_keys=['output_data'])
+        State.__init__(self, outcomes=HANDLE_ST, input_keys=['input_data'], output_keys=['output_data'])
         # Publicador para el tópico de velocidad
         self.cmd_vel_pub = rospy.Publisher(TOPIC_VEL, Twist, queue_size=10)
         self.cmd_vision_pub = rospy.Publisher(TOPIC_COMMAND, String, queue_size=10)
@@ -155,21 +155,23 @@ class FollowPerson(State):
         while not rospy.is_shutdown() and self.followPerson:
             rate.sleep()
 
-        if not self.followPerson:
+        if self.cmd == STOP_FOLLOW_CMD or self.cmd in self.states:
             self.subPerson.unregister()
             self.subCmd.unregister()
 
-        if self.cmd == STOP_FOLLOW_CMD:
-            return FOLLOW_ST
-        elif self.cmd in self.states:
-            userdata.output_data = self.cmd
+            self.dynamicDist = 0
+            self.last_error = 0
+            self.followPerson = True
+            userdata.output_data = None
+
+            if self.cmd in self.states:
+                userdata.output_data = self.cmd
+
             self.cmd_vision_pub.publish(STOP_DETECTION_CMD)
             return HANDLE_ST
 
     def cmd_callback(self, msg):
-        if msg.data in self.states or msg.data == STOP_FOLLOW_CMD:
-            self.followPerson = False
-    
+   
         if msg.data == MOVE_CLOSER_CMD:
             self.dynamicDist = self.dynamicDist - 0.5
         elif msg.data == MOVE_AWAY_CMD:
@@ -251,27 +253,46 @@ class IdleWait(State):
         self.cmd = None  # Variable para almacenar el último comando recibido
         self.subCmd = rospy.Subscriber(TOPIC_COMMAND, String, self.cmd_callback)
         self.idleWait = True
+        self.place = None
 
     def cmd_callback(self, msg):
-        if msg.data in states:
+        print(msg.data)
+        if ":" in msg.data: 
+            cmd, self.place = msg.data.split(":")
+        else:
+            cmd = msg.data
+
+        if cmd in states:
+            print("hola")
             self.idleWait = False
-            self.cmd = msg.data
+            self.cmd = cmd
 
     def execute(self, userdata):
-        rospy.loginfo("IDLE WAIT: Waiting for next state...")
+        rospy.loginfo("IDLE WAIT: Waiting for next state...")  
         
+        print("A")
         if userdata.input_data in states:
             cmd = userdata.input_data
             userdata.output_data = cmd
+            print("a")
             return userdata.input_data
+        
+        print("B")
+        if self.cmd in states:
+            print("b")
+            userdata.output_data = self.place
+            cmd = self.cmd
+            self.cmd = None
+            print(cmd)
+            return cmd
 
         # Espera hasta que se reciba un comando válido
         while not rospy.is_shutdown() and self.idleWait:
             rospy.sleep(0.1)  # Espera brevemente antes de verificar nuevamente
 
-        if self.cmd in states:
-            userdata.output_data = self.cmd
-            return self.cmd
+        self.idleWait = True
+        return IDLE_ST
+        
 
 """ ******************************************************************************************************
    Funcion principal
@@ -291,7 +312,6 @@ def main():
                 IDLE_ST:'IdleWait',
                 FOLLOW_ST:'FollowPerson',
                 MOVE_ST:'MoveState',
-                BASE_ST:'MoveState',
                 SHUTDOWN_ST:'end'},
             remapping={'input_data':'data',
                        'output_data':'data'})
@@ -299,15 +319,14 @@ def main():
         StateMachine.add('FollowPerson', 
             FollowPerson(), 
             transitions={
-                HANDLE_ST:'IdleWait',
-                FOLLOW_ST:'FollowPerson'},
+                HANDLE_ST:'IdleWait'},
             remapping={'input_data':'data',
                        'output_data':'data'})
         
         StateMachine.add('MoveState', 
             MoveState(), 
             transitions={
-                'succeeded': 'IdleWait',  # O cualquier otro estado que tenga sentido
+                'succeeded': 'IdleWait', 
                 'aborted': 'IdleWait',
                 'preempted': 'IdleWait'}, 
             remapping={'input_data': 'data'})

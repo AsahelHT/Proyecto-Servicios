@@ -1,0 +1,26 @@
+# Ignorar carpetas de caché de Python
+__pycache__/
+*.py[cod]
+
+# Ignorar archivos de configuración de entornos virtuales
+env/
+venv/
+
+# Ignorar archivos de configuración de IDEs comunes
+.vscode/
+.idea/
+
+# Ignorar archivos de registro
+*.log
+
+# Ignorar archivos creados por pytest
+.cache/
+
+# Ignorar archivos creados por Jupyter Notebook
+.ipynb_checkpoints/
+
+# Ignorar archivos de configuración de macOS
+.DS_Store
+
+# Ignorar archivos de configuración de Linux
+*.swp

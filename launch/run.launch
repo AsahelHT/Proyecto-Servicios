@@ -1,28 +1,45 @@
 <launch>
   
 
-  <!-- Definir el argumento 'detection_model' con un valor por defecto -->
-  <param name="model_path" value="$(find proyecto_servicios)/tf_model/lite-model_movenet_singlepose_lightning_3.tflite" />
+  <arg name="tf_model" default="$(find proyecto_servicios)/trained_models" />
+  <arg name="voice_model" default="$(find proyecto_servicios)/trained_models" />
   <arg name="movenet" default="false" />
-  <arg name="map_file" default="$(find my_maps)/mapa_aula.yaml" />
+  <arg name="sim" default="false" />
+  <arg name="map_file" default="$(find proyecto_servicios)/nav_maps/mapa_aula.yaml" />
 
-  <!-- Nodo para person_detection.py -->
-  <include file="$(find turtlebot_gazebo)/launch/amcl_demo.launch" />
-  <include file="$(find turtlebot_rviz_launchers)/launch/view_navigation.launch" />
+  <!-- STACK DE NAVEGACION -->
+  <include file="$(find turtlebot_gazebo)/launch/amcl_demo.launch">
+    <arg name="map_file" value="$(arg map_file)"/>
+  </include>
+  <include file="$(find turtlebot_rviz_launchers)/launch/view_navigation.launch"/>
 
+  <!-- DETECCION DE PERSONAS-->
   <!-- Nodo para 'mediapipe' -->
   <node name="pDetector_Mediapipe" pkg="proyecto_servicios" type="pDetector_mediapipe.py" output="screen" unless="$(arg movenet)"/>
 
   <!-- Nodo para 'tensorflow' -->
   <node name="pDetector_MoveNet" pkg="proyecto_servicios" type="pDetector_MoveNet.py" output="screen" respawn="false" if="$(arg movenet)">
     <param name="required" value="true"/>
-    <param name="model_path" value="$(find proyecto_servicios)/tf_model/lite-model_movenet_singlepose_lightning_3.tflite" />
+    <param name="tf_model" type="string" value="$(arg tf_model)" />
   </node>
 
-  <!-- Nodo para move_person.py -->
-  <node name="move_person" pkg="proyecto_servicios" type="move_person.py" output="screen" respawn="false">
+   <!-- RECONOCIMIENTO DE VOZ -->
+  <node name="voice_control" pkg="proyecto_servicios" type="voice_control.py" output="screen" respawn="false">
+    <param name="required" value="true"/>
+    <param name="voice_model" value="$(arg voice_model)" />
+  </node>
+
+  <!-- MOVER HUMANO EN SIMULACION -->
+  <node name="move_person" pkg="proyecto_servicios" type="move_person.py" output="screen" respawn="false" if="$(arg sim)">
     <param name="required" value="true"/>
   </node>
+
+   <!-- DETECCION DE GESTOS -->
+  <node name="move_person" pkg="proyecto_servicios" type="move_person.py" output="screen" respawn="false">
+    <param name="required" value="true"/>
+    <param name="sim" value="$(arg sim)" />
+  </node>
+
 
    <!-- Nodo para robot_control.py -->
   <node name="main" pkg="proyecto_servicios" type="main.py" output="screen" respawn="false">

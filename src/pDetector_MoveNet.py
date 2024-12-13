@@ -22,7 +22,13 @@ EDGES = {
 class MoveNetDetector:
     def __init__(self):
         # Cargar modelo MoveNet
-        model_path = rospy.get_param('~model_path', '../tf_model/lite-model_movenet_singlepose_lightning_3.tflite')
+        model_name = 'lite-model_movenet_singlepose_lightning_3.tflite'
+        model_path = rospy.get_param('~tf_model', "")
+
+        if model_path == "":
+            model_path = model_name
+        else:
+            model_path = model_path + '/' + model_name
 
         self.interpreter = tf.lite.Interpreter(model_path=model_path)
                                                    
@@ -94,7 +100,6 @@ class MoveNetDetector:
             center_of_image = (image.shape[1] // 2, center_y)
             cv2.line(image, center_of_image, (center_x, center_y), (255, 0, 0), 2)
 
-        
             cv2.imshow('Person Detection', image)
             cv2.waitKey(1)
 
