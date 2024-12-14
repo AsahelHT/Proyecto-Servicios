@@ -24,3 +24,6 @@ venv/
 
 # Ignorar archivos de configuración de Linux
 *.swp
+
+# Ignorar archivos .bak
+*.bak

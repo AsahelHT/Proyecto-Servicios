@@ -1,7 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
+import subprocess
+import signal
+
 import rospy
+import rosnode
 import cv2, cv_bridge
 import smach_ros
 import math
@@ -49,6 +54,9 @@ STOP_FOLLOW_CMD = "stop_follow_person"
 START_MOVE_CMD = "start_move_person"
 STOP_MOVE_CMD = "stop_move_person"
 
+START_VOICE_CMD = "start_voice_control"
+STOP_VOICE_CMD = "stop_voice_control"
+
 SHUTDOWN_CMD = "goodbye"
 
 
@@ -69,12 +77,17 @@ MAX_VSPEED = 0.2
 MAX_WSPEED = 0.3
 
 states = [IDLE_ST, FOLLOW_ST, MOVE_ST, SHUTDOWN_ST]
+rooms = r"^(.*)\b(cocina|baño|sala|habitación|estación)\b$"
 
 # Definir los waypoints a los que el robot debe moverse
 waypoints = [
-    ['cocina', (0, -2.2), (0.0, 0.0, 0.0, 1.0)],  # Nombre, posición, orientación
-    ['estacion', (6.5, 4.43), (0.0, 0.0, -0.984047240305, 0.177907360295)]  # Ejemplo con otro punto
+    ['habitación', (-0.3, 4.4), (0.0, 0.0, 0.0, 1.0)],  # Nombre, posición, orientación
+    ['estación', (-2.06, 5.82), (0.0, 0.0, 0.0, 1.0)],  # Ejemplo con otro punto
+    ['baño', (-3.6, 4.6), (0.0, 0.0, 0, 1.0)],
+    ['salón', (-3.6, 0.7), (0.0, 0.0, 0, 1.0)],
+    ['cocina', (0.0, 1.6), (0.0, 0.0, 0, 1.0)],
 ]
+
 
 """ ******************************************************************************************************
    Clase para el movimiento a un waypoint.
@@ -132,7 +145,7 @@ class FollowPerson(State):
     def __init__(self):
         global states
         self.states = [state for state in states if state != FOLLOW_ST]
-        State.__init__(self, outcomes=HANDLE_ST, input_keys=['input_data'], output_keys=['output_data'])
+        State.__init__(self, outcomes=[HANDLE_ST], input_keys=['input_data'], output_keys=['output_data'])
         # Publicador para el tópico de velocidad
         self.cmd_vel_pub = rospy.Publisher(TOPIC_VEL, Twist, queue_size=10)
         self.cmd_vision_pub = rospy.Publisher(TOPIC_COMMAND, String, queue_size=10)
@@ -155,19 +168,19 @@ class FollowPerson(State):
         while not rospy.is_shutdown() and self.followPerson:
             rate.sleep()
 
-        if self.cmd == STOP_FOLLOW_CMD or self.cmd in self.states:
-            self.subPerson.unregister()
-            self.subCmd.unregister()
+            if self.cmd == STOP_FOLLOW_CMD or self.cmd in self.states or MOVE_ST in self.cmd:
+                self.subPerson.unregister()
+                self.subCmd.unregister()
 
-            self.dynamicDist = 0
-            self.last_error = 0
-            self.followPerson = True
-            userdata.output_data = None
+                self.dynamicDist = 0
+                self.last_error = 0
+                self.followPerson = True
+                userdata.output_data = None
 
-            if self.cmd in self.states:
-                userdata.output_data = self.cmd
+                if self.cmd in self.states:
+                    userdata.output_data = self.cmd
 
-            self.cmd_vision_pub.publish(STOP_DETECTION_CMD)
+                self.cmd_vision_pub.publish(STOP_DETECTION_CMD)
             return HANDLE_ST
 
     def cmd_callback(self, msg):
@@ -256,39 +269,32 @@ class IdleWait(State):
         self.place = None
 
     def cmd_callback(self, msg):
-        print(msg.data)
         if ":" in msg.data: 
             cmd, self.place = msg.data.split(":")
         else:
             cmd = msg.data
 
         if cmd in states:
-            print("hola")
             self.idleWait = False
             self.cmd = cmd
 
     def execute(self, userdata):
         rospy.loginfo("IDLE WAIT: Waiting for next state...")  
-        
-        print("A")
-        if userdata.input_data in states:
-            cmd = userdata.input_data
-            userdata.output_data = cmd
-            print("a")
-            return userdata.input_data
-        
-        print("B")
-        if self.cmd in states:
-            print("b")
-            userdata.output_data = self.place
-            cmd = self.cmd
-            self.cmd = None
-            print(cmd)
-            return cmd
 
         # Espera hasta que se reciba un comando válido
         while not rospy.is_shutdown() and self.idleWait:
             rospy.sleep(0.1)  # Espera brevemente antes de verificar nuevamente
+
+        if userdata.input_data in states:
+            cmd = userdata.input_data
+            userdata.output_data = cmd
+            return userdata.input_data
+        
+        if self.cmd in states:
+            userdata.output_data = self.place
+            cmd = self.cmd
+            self.cmd = None
+            return cmd
 
         self.idleWait = True
         return IDLE_ST
@@ -297,6 +303,68 @@ class IdleWait(State):
 """ ******************************************************************************************************
    Funcion principal
 """    
+
+def stop_all_nodes():
+    rospy.loginfo("Recuperando lista de nodos...")
+    try:
+        # Obtener todos los nodos en ejecución
+        nodes = rosnode.get_node_names()
+
+        # Separar el nodo "main" del resto
+        main_node = None
+        other_nodes = []
+        for node in nodes:
+            if node == "/main":  # Nombre exacto del nodo principal
+                main_node = node
+
+            elif node != "/bash_interface":
+                other_nodes.append(node)
+
+        # Apagar todos los nodos excepto "main"
+        for node in other_nodes:
+            try:
+                rospy.loginfo(f"Apagando nodo: {node}")
+                os.system(f"rosnode kill {node}")
+            except Exception as e:
+                rospy.logwarn(f"Error al intentar apagar {node}: {e}")
+
+        # Finalmente, apagar el nodo "main"
+        if main_node:
+            try:
+                rospy.loginfo(f"Apagando el nodo principal: {main_node}")
+                os.system(f"rosnode kill {main_node}")
+                rospy.signal_shutdown("Apagando")
+                
+            except Exception as e:
+                rospy.logwarn(f"Error al intentar apagar {main_node}: {e}")
+
+    except Exception as e:
+        rospy.logerr(f"Error al recuperar los nodos: {e}")
+        
+def kill_run_launch():
+    try:
+        # Ejecuta el comando para buscar procesos relacionados con run.launch
+        result = subprocess.check_output(
+            "ps aux | grep '[r]oslaunch.*run.launch'",
+            shell=True,
+            text=True
+        )
+        
+        # Filtrar el PID del resultado
+        lines = result.strip().split("\n")
+        for line in lines:
+            parts = line.split()
+            pid = int(parts[1])  # El PID es la segunda columna
+            print(f"Encontrado proceso run.launch con PID: {pid}")
+            
+            # Termina el proceso
+            os.kill(pid, signal.SIGTERM)  # O usa signal.SIGKILL para forzar
+            print(f"Proceso con PID {pid} terminado correctamente.")
+            
+    except subprocess.CalledProcessError:
+        print("No se encontró ningún proceso relacionado con run.launch.")
+    except Exception as e:
+        print(f"Error al intentar matar el proceso: {e}")
 
 def main():
     rospy.init_node("main")
@@ -333,7 +401,12 @@ def main():
         
     sis = smach_ros.IntrospectionServer('server_name', sm, '/SM_ROOT')
     sis.start()
-    sm.execute()
+    res = sm.execute()
+
+    if res == 'end':
+        stop_all_nodes()
+        kill_run_launch()
+
     rospy.spin()   
 
 

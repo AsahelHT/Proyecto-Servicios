@@ -50,13 +50,13 @@ class MoveNetDetector:
             self.depth_sub = Subscriber(TOPIC_DEPTHCAM, Image)
             ats = ApproximateTimeSynchronizer([self.image_sub, self.depth_sub], queue_size=10, slop=0.05)
             ats.registerCallback(self.callback)
-            rospy.loginfo("PERSON DETECTION: Visual control ON")
+            rospy.loginfo("PERSON DETECTION: Camera ON")
 
         elif msg.data == STOP_DETECTION_CMD and self.is_active:
             self.is_active = False
             self.image_sub.unregister()
             self.depth_sub.unregister()
-            rospy.loginfo("PERSON DETECTION: Visual control OFF")
+            rospy.loginfo("PERSON DETECTION: Camera OFF")
 
     def callback(self, rgb_msg, depth_msg):
         rgb_image = self.bridge.imgmsg_to_cv2(rgb_msg, desired_encoding="bgr8")

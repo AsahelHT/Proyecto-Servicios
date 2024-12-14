@@ -1635,6 +1635,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
         <plugin name='model_push' filename='libgazebo_ros_model_push.so'>
+          <tf_prefix>person_</tf_prefix>
           <ros>
             <namespace>/person_walking</namespace>
             <remapping>cmd_vel:=cmd_vel</remapping>

@@ -42,7 +42,7 @@ class GestureDetector:
             if self.simulation:
                 self.cap = cv2.VideoCapture(0)
             self.image_sub = rospy.Subscriber(TOPIC_RGBCAM, Image, self.image_callback)
-            rospy.loginfo("GESTURE CONTROL: Visual control ON")
+            rospy.loginfo("GESTURE CONTROL: Camera ON")
             
         elif msg.data == STOP_DETECTION_CMD and self.is_active:
             self.is_active = False
@@ -50,7 +50,7 @@ class GestureDetector:
             if self.cap:
                 self.cap.release()
             cv2.destroyAllWindows()
-            rospy.loginfo("GESTURE CONTROL: Visual control OFF")
+            rospy.loginfo("GESTURE CONTROL: Camera OFF")
 
     def image_callback(self, msg):
         # Convierte el mensaje de imagen ROS a una imagen OpenCV
