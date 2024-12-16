@@ -90,7 +90,7 @@ class QRCodeApproachLogger:
 
         # Obtener parámetros del mapa
         image_file = path+"/"+map_data['image']
-        print(image_file)
+        
         resolution = map_data['resolution']
         origin = map_data['origin']  # [x_min, y_min, theta]
 

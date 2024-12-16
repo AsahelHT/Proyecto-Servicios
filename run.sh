@@ -2,18 +2,18 @@
 
 # Comprobar que se ha pasado al menos un argumento
 if [ $# -eq 0 ]; then
-  echo "Use: $0 <rviz> <option> <move_person>"
+  echo "Use: $0  <option> <rviz> <move_person>"
   echo "Options:"
   echo "  heavy - Launches everything"
   echo "  light - Launches navigation, follow, voice control and GUI"
   echo "  minimal - Launches navigation, follow and console"
   echo "  qr - Launches navigation and QR finder"
-  echo "Default: rviz:=false, nodes:=light, move_person:=false"
+  echo "Default: nodes:=light, move_person:=false, rviz:=false"
 fi
 
-RVIZ="${1:-}"
-MODE="${2:-light}"
-MOVEPERSON="${3:-}"
+RVIZ="${3:-}"
+MODE="${1:-light}"
+MOVEPERSON="${2:-}"
 
 # Fuente de ROS (ajustar según tu configuración)
 source /opt/ros/noetic/setup.bash

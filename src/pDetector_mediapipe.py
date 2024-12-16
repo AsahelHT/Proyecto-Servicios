@@ -82,11 +82,11 @@ class MoveNetDetector:
             self.cmd.y = pixel_depth if np.isfinite(pixel_depth) else -1
             #rospy.loginfo(f"Publishing: Error: {self.cmd.x}, Distance: {self.cmd.y}")
             
-        if self.show_img:
-            cv2.circle(image, (center_x, center_y), 5, (0, 0, 255), -1)
+            if self.show_img:
+                cv2.circle(image, (center_x, center_y), 5, (0, 0, 255), -1)
 
-            center_of_image = (image.shape[1] // 2, center_y)
-            cv2.line(image, center_of_image, (center_x, center_y), (255, 0, 0), 2)
+                center_of_image = (image.shape[1] // 2, center_y)
+                cv2.line(image, center_of_image, (center_x, center_y), (255, 0, 0), 2)
 
         
             cv2.imshow('Person Detection', image)
