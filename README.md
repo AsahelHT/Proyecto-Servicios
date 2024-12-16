@@ -61,7 +61,7 @@ Para descargar los fuentes de los diversos repositorios necesarios de manera aut
 3. Workspace de catkin previamente creado: [http://wiki.ros.org/catkin/Tutorials/create_a_workspace](http://wiki.ros.org/catkin/Tutorials/create_a_workspace)
 4. Gazebo: [https://classic.gazebosim.org/tutorials?tut=install_ubuntu](https://classic.gazebosim.org/tutorials?tut=install_ubuntu) 
 5. Mediapipe: [https://pypi.org/project/mediapipe/](https://pypi.org/project/mediapipe/)
-6. Python libraries:
+6. Dependencias de python:
    ```sh
    pip install -r requirements.txt
    ```

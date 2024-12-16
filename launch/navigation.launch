@@ -1,0 +1,13 @@
+ <launch>
+  <arg name="map_file" default="$(find proyecto_servicios)/nav_maps/mapa_campo.yaml" />
+  <arg name="rviz" default="false" />
+ <!-- STACK DE NAVEGACION -->
+  <include file="$(find turtlebot_gazebo)/launch/amcl_demo.launch">
+    <arg name="map_file" value="$(arg map_file)"/>
+  </include>
+
+  <include file="$(find turtlebot_rviz_launchers)/launch/view_navigation.launch" if="$(arg rviz)"/>
+  
+
+  </launch>
+  

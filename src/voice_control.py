@@ -26,6 +26,7 @@ class VoiceControl:
         self.engine.setProperty('volume', 1.0)  # Volumen
 
         self.log_pub = rospy.Publisher(TOPIC_LOGS, String, queue_size=10)
+        self.log_msg = None
         self.command_pub = rospy.Publisher(TOPIC_COMMAND, String, queue_size=1)
 
         self.is_active = True
@@ -51,10 +52,10 @@ class VoiceControl:
 
         rospy.Subscriber(TOPIC_COMMAND, String, self.cmd_callback)
     # Función para publicar, imprimir y sintetizar mensajes
+
     def log_and_speak(self, message):
         # Publica en el topic de ROS
         rospy.loginfo(message)
-        self.log_pub.publish(message)
         
         # Imprime en consola
         #print(message)
@@ -63,7 +64,7 @@ class VoiceControl:
         self.engine.say(message)
         self.engine.runAndWait()
 
-        # Callback para manejar el audio en tiempo real
+    # Callback para manejar el audio en tiempo real
     def audio_callback(self, indata, frames, time, status):
         if status:
             self.log_and_speak(f"Estado del micrófono: {status}")
@@ -77,10 +78,12 @@ class VoiceControl:
         if msg.data == START_VOICE_CMD and not self.is_active:
             self.is_active = True
             rospy.loginfo("VOICE CONTROL: ON")
+            self.log_pub.publish("[INFO] VOICE CONTROL: ON")
             
         elif msg.data == STOP_VOICE_CMD and self.is_active:
             self.is_active = False
             rospy.loginfo("VOICE CONTROL: OFF")
+            self.log_pub.publish("[INFO] VOICE CONTROL: OFF")
 
         elif msg.data == SHUTDOWN_ST:
             self.engine.say("Apagando")
@@ -109,16 +112,18 @@ class VoiceControl:
             
             with sd.InputStream(callback=self.audio_callback):
                 self.log_and_speak("Escuchando...")
+                self.log_pub.publish("[VOICE]: Escuchando...")
 
                 while not rospy.is_shutdown():
                     comando_activacion = self.reconocer_comando()
-                    print(comando_activacion)
                     if "hola robot" in comando_activacion or "hola" in comando_activacion or "escuchame" in comando_activacion or "escucha" in comando_activacion or "oye" in comando_activacion or "oyeme" in comando_activacion:
                         self.is_active = True
                         if "hola robot" in comando_activacion or "hola" in comando_activacion:
                             self.log_and_speak("Hola usuario, ¿qué quieres que haga?")
+                            self.log_pub.publish("[VOICE]: Hola usuario, ¿qué quieres que haga?")
                         elif "escucha" in comando_activacion or "escuchame" in comando_activacion or "oye" in comando_activacion or "oyeme" in comando_activacion:
                             self.log_and_speak("Te estoy escuchando")
+                            self.log_pub.publish("[VOICE]: Te estoy escuchando.")
 
                         if self.cafe_on:
                             inicio = time.time() 
@@ -145,39 +150,48 @@ class VoiceControl:
 
                             if "sígueme" in accion:
                                 self.log_and_speak("De acuerdo, te sigo.")
+                                self.log_pub.publish("[VOICE]: De acuerdo, te sigo.")
                                 self.command_pub.publish(FOLLOW_ST)
                             elif "quédate aquí" in accion:
                                 self.log_and_speak("De acuerdo, me quedo quieto.")
+                                self.log_pub.publish("[VOICE]: De acuerdo, me quedo quieto.")
                                 self.command_pub.publish(STOP_FOLLOW_CMD)
                             elif lugar != None:
                                 self.log_and_speak("De acuerdo, me dirijo a " + lugar)
                                 self.command_pub.publish(MOVE_ST + ":" + lugar)
                             elif "vuelve a la estación" in accion:
                                 self.log_and_speak("De acuerdo, me dirijo a la estación de carga.")
+                                self.log_pub.publish("[VOICE]: De acuerdo, me dirijo a la estación de carga.")
                                 self.command_pub.publish(MOVE_ST + ":" + "estacion")
                             elif "qué" in accion or "un qué" in accion or "cómo" in accion or "que" in accion or "un que" in accion or "como" in accion:
                                 self.log_and_speak("Un cafe")
                                 self.cafe_on = False
                             elif "no mires" in accion or ("apaga" in accion and "camara" in accion):
-                                self.log_and_speak("De acuerdo, no miro")
+                                self.log_and_speak("De acuerdo, no miro.")
+                                self.log_pub.publish("[VOICE]: De acuerdo, no miro.")
                                 self.command_pub.publish(STOP_DETECTION_CMD)
                             elif "mírame" in accion or ("apaga" in accion and "camara" in accion):
-                                self.log_and_speak("De acuerdo, enciendo camara")
+                                self.log_and_speak("De acuerdo, enciendo camara.")
+                                self.log_pub.publish("[VOICE]: De acuerdo, enciendo camara.")
                                 self.command_pub.publish(START_DETECTION_CMD)
                             elif "no" in accion and ("oigas" in accion or "escuches" in accion):
-                                self.log_and_speak("De acuerdo, no te oigo")
+                                self.log_and_speak("De acuerdo, no te oigo.")
+                                self.log_pub.publish("[VOICE]: De acuerdo, no te oigo.")
                                 self.is_active = False
                                 break
                             elif "adiós" in accion:
                                 self.log_and_speak("Adiós")
+                                self.log_pub.publish("[VOICE]: Adiós")
                                 self.command_pub.publish(SHUTDOWN_ST)
                                 rospy.signal_shutdown("Apagando")
                                 break
                             else:
                                 rospy.loginfo("Comando no reconocido.")
-                                self.log_pub.publish("Comando no reconocido.")
+                                
+
                     if "adiós" in comando_activacion:
                         self.log_and_speak("Adiós.")
+                        self.log_pub.publish("[VOICE]: Adiós")
                         self.command_pub.publish(SHUTDOWN_ST)
                         rospy.signal_shutdown("Apagando")
                         break

@@ -1,0 +1,15 @@
+material qr_habitacion/qr_habitacion
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+                texture qr_habitacion.png
+                filtering none
+                scale 1.0 1.0
+            }
+        }
+    }
+}

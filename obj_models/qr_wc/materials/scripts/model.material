@@ -1,0 +1,15 @@
+material qr_wc/qr_wc
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+                texture qr_wc.png
+                filtering none
+                scale 1.0 1.0
+            }
+        }
+    }
+}

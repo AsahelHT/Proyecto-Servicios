@@ -1,0 +1,2 @@
+QR Code, Position (x, y, z), Orientation (x, y, z, w)
+cocina, (-0.04, 1.76, 0.00), (0.00, 0.00, 0.70, 0.71)

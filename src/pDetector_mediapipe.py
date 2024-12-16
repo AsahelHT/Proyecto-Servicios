@@ -12,7 +12,7 @@ import mediapipe as mp
 
 from message_filters import ApproximateTimeSynchronizer, Subscriber
 
-from main import TOPIC_PERSONPOSE, TOPIC_COMMAND, START_DETECTION_CMD, STOP_DETECTION_CMD, TOPIC_RGBCAM, TOPIC_DEPTHCAM
+from main import TOPIC_PERSONPOSE, TOPIC_COMMAND, START_DETECTION_CMD, STOP_DETECTION_CMD, TOPIC_RGBCAM, TOPIC_DEPTHCAM, TOPIC_LOGS
 
 EDGES = {
     (0, 1): 'm', (0, 2): 'c', (1, 3): 'm', (2, 4): 'c', (0, 5): 'm', (0, 6): 'c',
@@ -36,7 +36,7 @@ class MoveNetDetector:
         self.depth_sub = None   
         self.show_img = False
         self.cmd_pub = rospy.Publisher(TOPIC_PERSONPOSE, Point, queue_size=10)
-
+        self.log_pub = rospy.Publisher(TOPIC_LOGS, String, queue_size=10)
         rospy.Subscriber(TOPIC_COMMAND, String, self.handler_callback)
         rospy.loginfo("Person detection waiting...")
 
@@ -51,12 +51,14 @@ class MoveNetDetector:
             ats = ApproximateTimeSynchronizer([self.image_sub, self.depth_sub], queue_size=10, slop=0.05)
             ats.registerCallback(self.callback)
             rospy.loginfo("PERSON DETECTION: Camera ON")
+            self.log_pub.publish("[VISION]: PERSON DETECTION: Camera ON")
 
         elif msg.data == STOP_DETECTION_CMD and self.is_active:
             self.is_active = False
             self.image_sub.unregister()
             self.depth_sub.unregister()
             rospy.loginfo("PERSON DETECTION: Camera OFF")
+            self.log_pub.publish("[VISION]: PERSON DETECTION: Camera OFF")
 
     def callback(self, rgb_msg, depth_msg):
         rgb_image = self.bridge.imgmsg_to_cv2(rgb_msg, desired_encoding="bgr8")
@@ -64,7 +66,7 @@ class MoveNetDetector:
         self.detect_person(rgb_image, depth_image)
 
     def detect_person(self, image, depth_image):
-        # Preprocesar la imagen para MoveNet
+        
         rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         results = self.pose.process(rgb_image)
 
@@ -78,7 +80,7 @@ class MoveNetDetector:
             
             self.cmd.x = center_x - image.shape[1] // 2  # Error respecto al centro
             self.cmd.y = pixel_depth if np.isfinite(pixel_depth) else -1
-            rospy.loginfo(f"Publishing: Error: {self.cmd.x}, Distance: {self.cmd.y}")
+            #rospy.loginfo(f"Publishing: Error: {self.cmd.x}, Distance: {self.cmd.y}")
             
         if self.show_img:
             cv2.circle(image, (center_x, center_y), 5, (0, 0, 255), -1)

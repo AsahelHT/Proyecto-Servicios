@@ -12,7 +12,7 @@ import mediapipe as mp
 import numpy as np
 import math
 
-from main import TOPIC_COMMAND, START_DETECTION_CMD, STOP_DETECTION_CMD, TOPIC_RGBCAM, MOVE_CLOSER_CMD, MOVE_AWAY_CMD, RESET_DIST_CMD, STOP_FOLLOW_CMD
+from main import TOPIC_COMMAND, START_DETECTION_CMD, STOP_DETECTION_CMD, TOPIC_RGBCAM, MOVE_CLOSER_CMD, MOVE_AWAY_CMD, RESET_DIST_CMD, STOP_FOLLOW_CMD, TOPIC_LOGS
 
 class GestureDetector:
 
@@ -31,6 +31,7 @@ class GestureDetector:
 
         self.image_sub = None      
         self.cmd_pub = rospy.Publisher(TOPIC_COMMAND, String, queue_size=10)
+        self.log_pub = rospy.Publisher(TOPIC_LOGS, String, queue_size=10)  
 
         rospy.Subscriber(TOPIC_COMMAND, String, self.cmd_callback)
         
@@ -43,6 +44,7 @@ class GestureDetector:
                 self.cap = cv2.VideoCapture(0)
             self.image_sub = rospy.Subscriber(TOPIC_RGBCAM, Image, self.image_callback)
             rospy.loginfo("GESTURE CONTROL: Camera ON")
+            self.log_pub.publish("[VISION]: GESTURE CONTROL: Camera ON")
             
         elif msg.data == STOP_DETECTION_CMD and self.is_active:
             self.is_active = False
@@ -51,6 +53,7 @@ class GestureDetector:
                 self.cap.release()
             cv2.destroyAllWindows()
             rospy.loginfo("GESTURE CONTROL: Camera OFF")
+            self.log_pub.publish("[VISION]: GESTURE CONTROL: Camera ON")
 
     def image_callback(self, msg):
         # Convierte el mensaje de imagen ROS a una imagen OpenCV
@@ -93,12 +96,16 @@ class GestureDetector:
                 
                 if gesture == MOVE_CLOSER_CMD:
                     print("Gesto detectado: v - Acercarse")
+                    self.log_pub.publish("[VISION]: GESTURE CONTROL: Away")
                 elif gesture == MOVE_AWAY_CMD:
                     print("Gesto detectado: ^ - Alejarse")
+                    self.log_pub.publish("[VISION]: GESTURE CONTROL: Closer")
                 elif gesture == STOP_FOLLOW_CMD:
                     print("Gesto detectado: .|. - Dejar de seguir")
+                    self.log_pub.publish("[VISION]: GESTURE CONTROL: Stop following")
                 elif gesture == RESET_DIST_CMD:
                     print("Gesto detectado: O - Reset distance")
+                    self.log_pub.publish("[VISION]: GESTURE CONTROL: Reset distance")
 
         
         # Muestra el frame con las anotaciones (opcional)

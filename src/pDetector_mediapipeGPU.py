@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+ESTE CODIGO NO SE USA ACTUALMENTE, REFERENCIA PARA PODER USAR GPU CON MEDIAPIPE
 
+"""
 import rospy
 from sensor_msgs.msg import Image
 import cv_bridge

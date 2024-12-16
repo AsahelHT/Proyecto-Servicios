@@ -1,0 +1,39 @@
+<launch>
+  
+
+  <arg name="tf_model" default="$(find proyecto_servicios)/trained_models" />
+  <arg name="voice_model" default="$(find proyecto_servicios)/trained_models" />
+  <arg name="movenet" default="false" />
+  <arg name="sim" default="false" />
+  <arg name="bash_gui" default="true" />
+  <arg name="bash_title" default="ROBOT_COMMAND_INTERFACE" />
+  
+  <arg name="map_file" default="$(find proyecto_servicios)/nav_maps/mapa_campo.yaml" />
+  
+  <!-- DETECCION DE PERSONAS-->
+  <!-- Nodo para 'mediapipe' -->
+  <node name="pDetector_Mediapipe" pkg="proyecto_servicios" type="pDetector_mediapipe.py" output="screen" unless="$(arg movenet)"/>
+
+  <!-- Nodo para 'tensorflow' -->
+  <node name="pDetector_MoveNet" pkg="proyecto_servicios" type="pDetector_MoveNet.py" output="screen" respawn="false" if="$(arg movenet)">
+    <param name="required" value="true"/>
+    <param name="tf_model" type="string" value="$(arg tf_model)" />
+  </node>
+
+  <!-- MOVER HUMANO EN SIMULACION -->
+  <node name="move_person" pkg="proyecto_servicios" type="move_person.py" output="screen" respawn="false" if="$(arg sim)">
+    <param name="required" value="true"/>
+  </node>
+  
+  <!-- BASH INTERFACE -->
+  <node name="bash_interface" pkg="proyecto_servicios" type="bash_interface.py" output="screen" respawn="false" if="$(arg bash_gui)"
+    launch-prefix="gnome-terminal --title=$(arg bash_title) -- bash -c">
+    <param name="required" value="true"/>
+  </node>
+
+  <!-- Nodo para robot_control.py -->
+  <node name="main" pkg="proyecto_servicios" type="main.py" output="screen" respawn="false">
+    <param name="required" value="true"/>
+  </node>
+
+</launch>

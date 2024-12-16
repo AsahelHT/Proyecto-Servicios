@@ -11,7 +11,7 @@ import numpy as np
 import tensorflow as tf
 from message_filters import ApproximateTimeSynchronizer, Subscriber
 
-from main import TOPIC_PERSONPOSE, TOPIC_COMMAND, START_DETECTION_CMD, STOP_DETECTION_CMD, TOPIC_RGBCAM, TOPIC_DEPTHCAM
+from main import TOPIC_PERSONPOSE, TOPIC_COMMAND, START_DETECTION_CMD, STOP_DETECTION_CMD, TOPIC_RGBCAM, TOPIC_DEPTHCAM, TOPIC_LOGS
 
 EDGES = {
     (0, 1): 'm', (0, 2): 'c', (1, 3): 'm', (2, 4): 'c', (0, 5): 'm', (0, 6): 'c',
@@ -41,9 +41,9 @@ class MoveNetDetector:
         self.cmd = None
         self.image_sub = None   
         self.depth_sub = None   
-        self.show_img = False
+        self.show_img = True
         self.cmd_pub = rospy.Publisher(TOPIC_PERSONPOSE, Point, queue_size=10)
-
+        self.log_pub = rospy.Publisher(TOPIC_LOGS, String, queue_size=10)
         rospy.Subscriber(TOPIC_COMMAND, String, self.handler_callback)
         rospy.loginfo("Person detection waiting...")
 
@@ -58,12 +58,14 @@ class MoveNetDetector:
             ats = ApproximateTimeSynchronizer([self.image_sub, self.depth_sub], queue_size=10, slop=0.05)
             ats.registerCallback(self.callback)
             rospy.loginfo("PERSON DETECTION: Camera ON")
+            self.log_pub.publish("[VISION]: PERSON DETECTION: Camera ON")
 
         elif msg.data == STOP_DETECTION_CMD and self.is_active:
             self.is_active = False
             self.image_sub.unregister()
             self.depth_sub.unregister()
             rospy.loginfo("PERSON DETECTION: Camera OFF")
+            self.log_pub.publish("[VISION]: PERSON DETECTION: Camera OFF")
 
     def callback(self, rgb_msg, depth_msg):
         rgb_image = self.bridge.imgmsg_to_cv2(rgb_msg, desired_encoding="bgr8")
@@ -83,14 +85,16 @@ class MoveNetDetector:
 
         # Procesar resultados
         keypoints = np.squeeze(keypoints_with_scores)
-        center_x, center_y, pixel_depth = self.extract_pose(keypoints, image, depth_image)
+        center_x, center_y, pixel_depth = self.extract_pose(keypoints, image, depth_image,confidence_threshold=0.5)
 
         self.cmd = Point()
+        print(center_x)
+        
         self.cmd.x = center_x - image.shape[1] // 2  # Error respecto al centro
         self.cmd.y = pixel_depth if np.isfinite(pixel_depth) else -1
-        rospy.loginfo(f"Publishing: Error: {self.cmd.x}, Distance: {self.cmd.y}")
+        #rospy.loginfo(f"Publishing: Error: {self.cmd.x}, Distance: {self.cmd.y}")
         self.cmd_pub.publish(self.cmd)
-
+        print(self.cmd)
         # Dibujar pose
         #self.draw_pose(image, keypoints, confidence_threshold=0.3)
 
@@ -103,15 +107,34 @@ class MoveNetDetector:
             cv2.imshow('Person Detection', image)
             cv2.waitKey(1)
 
-    def extract_pose(self, keypoints, image, depth_image):
-        # Extraer caderas
+    def extract_pose(self, keypoints, image, depth_image, confidence_threshold=0.5):
+        """
+        Extrae la posición del centro de la persona basándose en las keypoints.
+        Aplica un umbral de confianza para filtrar detecciones poco confiables.
+        """
+        # Extraer las keypoints de las caderas
         left_hip = keypoints[11][:2]
+        left_hip_conf = keypoints[11][2]  # Puntaje de confianza para la cadera izquierda
         right_hip = keypoints[12][:2]
-        #center = (left_hip + right_hip) / 2
-        center = left_hip
+        right_hip_conf = keypoints[12][2]  # Puntaje de confianza para la cadera derecha
+
+        # Verifica si las keypoints de las caderas son confiables
+        if left_hip_conf < confidence_threshold or right_hip_conf < confidence_threshold:
+            rospy.logwarn("Detección poco confiable. Ignorando frame.")
+            return -1, -1, -1  # Retorna valores no válidos para esta detección
+
+        # Calcular el centro entre las caderas
+        center = (left_hip + right_hip) / 2
         image_height, image_width, _ = image.shape
         pixel_x, pixel_y = int(center[1] * image_width), int(center[0] * image_height)
-        pixel_depth = depth_image[pixel_y, pixel_x] if 0 <= pixel_x < image_width and 0 <= pixel_y < image_height else -1
+
+        # Validar los límites de la imagen para evitar errores
+        if not (0 <= pixel_x < image_width and 0 <= pixel_y < image_height):
+            return -1, -1, -1
+
+        # Extraer la profundidad en el centro
+        pixel_depth = depth_image[pixel_y, pixel_x] if np.isfinite(depth_image[pixel_y, pixel_x]) else -1
+
         return pixel_x, pixel_y, pixel_depth
 
 rospy.init_node('Person_Detector')

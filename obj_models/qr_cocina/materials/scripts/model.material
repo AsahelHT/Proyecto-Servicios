@@ -1,0 +1,15 @@
+material qr_cocina/qr_cocina
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+                texture qr_cocina.png
+                filtering none
+                scale 1.0 1.0
+            }
+        }
+    }
+}

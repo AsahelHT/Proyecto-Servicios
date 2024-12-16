@@ -139,19 +139,19 @@ class TurtleBotControlUI(QWidget):
     # Funciones que se llaman al pulsar los botones
     def send_follow_command(self):
         self.ros_thread.publish_command(FOLLOW_ST)  # Publica 'start_follow'
-        self.ros_thread.publish_log('Iniciando seguimiento...')
+        #self.ros_thread.publish_log('Iniciando seguimiento...')
 
     def send_stop_command(self):
         self.ros_thread.publish_command(STOP_FOLLOW_CMD)  # Publica 'stop_follow'
-        self.ros_thread.publish_log('Deteniendo seguimiento...')
+        #self.ros_thread.publish_log('Deteniendo seguimiento...')
 
     def send_goodbye_command(self):
         self.ros_thread.publish_command(SHUTDOWN_ST)
-        self.ros_thread.publish_log('Goodbye...')
+        #self.ros_thread.publish_log('Goodbye...')
 
     def send_home_command(self):
         self.ros_thread.publish_command(MOVE_ST+':'+"estacion")
-        self.ros_thread.publish_log('Volviendo a home...')
+        #self.ros_thread.publish_log('Volviendo a home...')
 
     def send_go_to_command(self):
         # Obtener el texto de la casilla de entrada
@@ -161,7 +161,7 @@ class TurtleBotControlUI(QWidget):
         if destination:
             go_to_message = MOVE_ST+":"+destination
             self.ros_thread.publish_command(go_to_message)  # Publica el comando 'go_to_<destination>'
-            self.ros_thread.publish_log(f"Enviando comando: {go_to_message}")  # Log del mensaje enviado
+            self.ros_thread.publish_log(f"[INFO]: Sending cmd: {go_to_message}")  # Log del mensaje enviado
             self.go_to_input.clear()  # Limpiar el campo de entrada después de enviar el comando
 
 
