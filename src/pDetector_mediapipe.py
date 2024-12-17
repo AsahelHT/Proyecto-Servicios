@@ -34,7 +34,7 @@ class MoveNetDetector:
         self.cmd = None
         self.image_sub = None   
         self.depth_sub = None   
-        self.show_img = False
+        self.show_img = False 
         self.cmd_pub = rospy.Publisher(TOPIC_PERSONPOSE, Point, queue_size=10)
         self.log_pub = rospy.Publisher(TOPIC_LOGS, String, queue_size=10)
         rospy.Subscriber(TOPIC_COMMAND, String, self.handler_callback)
@@ -89,8 +89,8 @@ class MoveNetDetector:
                 cv2.line(image, center_of_image, (center_x, center_y), (255, 0, 0), 2)
 
         
-            cv2.imshow('Person Detection', image)
-            cv2.waitKey(1)
+                cv2.imshow('Person Detection', image)
+                cv2.waitKey(1)
 
         self.cmd_pub.publish(self.cmd)
 

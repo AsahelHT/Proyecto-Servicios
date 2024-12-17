@@ -474,6 +474,7 @@ def main():
     
     log_pub.publish("[EVENT]: STARTING APP")
     sm.userdata.data = None
+    
     with sm:
                
         StateMachine.add('IdleWait', 
