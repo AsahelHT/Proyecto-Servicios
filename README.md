@@ -99,16 +99,16 @@ Para usar este paquete se ha implementado un fichero run.sh que permite lanzar l
    ```sh
       ./run.sh
    ```
-   Este fichero admite argumentos de ejecución al lanzarlo desde terminal:
+   * Este fichero admite argumentos de ejecución al lanzarlo desde terminal:
       ```sh
          ./run.sh <option> <move_person> <rviz>
       ```
-   Los argumentos admitidos son los siguientes
+   * Los argumentos admitidos son los siguientes
       1. Opcion minimal:
          ```sh
             ./run.sh minimal <move_person> <rviz>
          ```
-         Se lanzan los nodos:
+         - Se lanzan los nodos:
             - Deteccion de personas
             - Interfaz por línea de comandos
             - Nodo principal (main)
@@ -117,7 +117,7 @@ Para usar este paquete se ha implementado un fichero run.sh que permite lanzar l
          ```sh
             ./run.sh light <move_person> <rviz>
          ```
-         Se lanzan los nodos:
+         - Se lanzan los nodos:
             - Deteccion de personas
             - Control de voz
             - Interfaz visual
@@ -127,7 +127,7 @@ Para usar este paquete se ha implementado un fichero run.sh que permite lanzar l
          ```sh
             ./run.sh heavy <move_person> <rviz>
          ```
-         Se lanzan todos los nodos:
+         - Se lanzan todos los nodos:
             - Deteccion de personas
             - Control de voz
             - Control por gestos
