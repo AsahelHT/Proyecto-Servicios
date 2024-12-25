@@ -208,7 +208,7 @@ Para lanzar el stack de navegación en un entorno diferente al establecido por d
 ## Workspace
 
 El workspace del paquete está distribuido de la siguiente manera:
-
+```plaintext
 📂 proyecto_servicios
 ├── 🔧 CMakeLists.txt
 ├── 📂 launch
@@ -273,7 +273,7 @@ El workspace del paquete está distribuido de la siguiente manera:
     ├── 🌐 casa_grande.world
     ├── 🌐 empty_person.world
     └── 🌐 person_world.world
-
+```
 
 1. En la carpeta /launch se encuentran todos los ficheros .launch implementados. Estos .launch son lanzados de manera automática por el fichero run.sh pero pueden ser lanzados independientemente mediante el paquete de ROS, roslaunch:
 ```sh
