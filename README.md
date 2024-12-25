@@ -212,19 +212,19 @@ El workspace del paquete está distribuido de la siguiente manera:
 <pre>
 <span style="color: blue; font-weight: bold;">proyecto_servicios</span>
 ├── CMakeLists.txt
-├── <span style="color: blue; font-weight: bold;">launch</span>
+├── 📂 <span style="color: blue; font-weight: bold;">launch</span>
 │   ├── navigation.launch
 │   ├── nodes_heavy.launch
 │   ├── nodes_light.launch
 │   ├── nodes_minimal.launch
 │   ├── person_world.launch
 │   └── world.launch
-├── <span style="color: blue; font-weight: bold;">nav_maps</span>
+├── 📂 <span style="color: blue; font-weight: bold;">nav_maps</span>
 │   ├── mapa_aula.pgm
 │   ├── mapa_aula.yaml
 │   ├── mapa_campo.pgm
 │   └── mapa_campo.yaml
-├── <span style="color: blue; font-weight: bold;">obj_models</span>
+├── 📂 <span style="color: blue; font-weight: bold;">obj_models</span>
 │   ├── <span style="color: blue; font-weight: bold;">person_walking</span>
 │   │   ├── ...
 │   │   ...
@@ -244,7 +244,7 @@ El workspace del paquete está distribuido de la siguiente manera:
 ├── README.md
 ├── requirements.txt
 ├── run.sh
-├── <span style="color: blue; font-weight: bold;">src</span>
+├── 📂 <span style="color: blue; font-weight: bold;">src</span>
 │   ├── bash_interface.py
 │   ├── hand_control.py
 │   ├── main.py
@@ -258,7 +258,7 @@ El workspace del paquete está distribuido de la siguiente manera:
 │   ├── save_pos.py
 │   ├── user_gui.py
 │   └── voice_control.py
-├── <span style="color: blue; font-weight: bold;">trained_models</span>
+├── 📂 <span style="color: blue; font-weight: bold;">trained_models</span>
 │   ├── lite-model_movenet_singlepose_lightning_3.tflite
 │   ├── pose_landmarker_full.task
 │   ├── pose_landmarker_heavy.task
@@ -266,7 +266,7 @@ El workspace del paquete está distribuido de la siguiente manera:
 │   └── vosk-model-small-es-0.42
 │       ├── ...
 │       ...
-└── <span style="color: blue; font-weight: bold;">worlds</span>
+└── 📂 <span style="color: blue; font-weight: bold;">worlds</span>
     ├── campo.world
     ├── casa2_persona.world
     ├── casa2.world
