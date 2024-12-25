@@ -287,7 +287,10 @@ proyecto_servicios
 
 4. La carpeta /src contiene los códigos fuente que lanzan los distintos nodos y funcionalidades.
 
-5. 
+5. En /trained_models se incluyen los modelos y dependencias necesarias para poder usar el reconocmiento de voz y diferentes métodos de detección de personas (no necesarios si se está usando Mediapipe por defecto)
+
+6. En /worlds contiene los ficheros .world que utiliza Gazebo para la simulación. Por defecto se lanza en simulación casa3.world.
+
 <!-- ACKNOWLEDGMENTS -->
 ## Participantes
 
