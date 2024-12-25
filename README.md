@@ -209,64 +209,64 @@ Para lanzar el stack de navegación en un entorno diferente al establecido por d
 
 El workspace del paquete está distribuido de la siguiente manera:
 
-``` plaintext
-proyecto_servicios
+<pre>
+<span style="color: blue; font-weight: bold;">proyecto_servicios</span>
 ├── CMakeLists.txt
-├── launch
-│   ├── navigation.launch
-│   ├── nodes_heavy.launch
-│   ├── nodes_light.launch
-│   ├── nodes_minimal.launch
-│   ├── person_world.launch
-│   └── world.launch
-├── nav_maps
-│   ├── mapa_aula.pgm
-│   ├── mapa_aula.yaml
-│   ├── mapa_campo.pgm
-│   └── mapa_campo.yaml
-├── obj_models
-│   ├── person_walking
-│   │   ├── ...
-│   │   ...
-│   ├── qr_cocina
-│   │   ├── ...
-│   │   ...
-│   ├── qr_habitacion
-│   │   ├── ...
-│   │   ...
-│   ├── qr_salon
-│   │   ├── ...
-│   │   ...
-│   └── qr_wc
-│       ├── ...
-│       ...
+├── <span style="color: blue; font-weight: bold;">launch</span>
+│   ├── navigation.launch
+│   ├── nodes_heavy.launch
+│   ├── nodes_light.launch
+│   ├── nodes_minimal.launch
+│   ├── person_world.launch
+│   └── world.launch
+├── <span style="color: blue; font-weight: bold;">nav_maps</span>
+│   ├── mapa_aula.pgm
+│   ├── mapa_aula.yaml
+│   ├── mapa_campo.pgm
+│   └── mapa_campo.yaml
+├── <span style="color: blue; font-weight: bold;">obj_models</span>
+│   ├── <span style="color: blue; font-weight: bold;">person_walking</span>
+│   │   ├── ...
+│   │   ...
+│   ├── <span style="color: blue; font-weight: bold;">qr_cocina</span>
+│   │   ├── ...
+│   │   ...
+│   ├── <span style="color: blue; font-weight: bold;">qr_habitacion</span>
+│   │   ├── ...
+│   │   ...
+│   ├── <span style="color: blue; font-weight: bold;">qr_salon</span>
+│   │   ├── ...
+│   │   ...
+│   └── <span style="color: blue; font-weight: bold;">qr_wc</span>
+│       ├── ...
+│       ...
 ├── package.xml
 ├── README.md
 ├── requirements.txt
 ├── run.sh
-├── src
-│   ├── bash_interface.py
-│   ├── hand_control.py
-│   ├── main.py
-│   ├── move_person.py
-│   ├── pDetector_mediapipeGPU.py
-│   ├── pDetector_mediapipe.py
-│   ├── pDetector_MoveNet.py
-│   ├── qr_code_log.txt
-│   ├── QR_detection.py
-│   ├── QR_finder.py
-│   ├── save_pos.py
-│   ├── user_gui.py
-│   └── voice_control.py
-├── trained_models
-│   ├── lite-model_movenet_singlepose_lightning_3.tflite
-│   ├── pose_landmarker_full.task
-│   ├── pose_landmarker_heavy.task
-│   ├── pose_landmarker_lite.task
-│   └── vosk-model-small-es-0.42
-│       ├── ...
-│       ...
-└── worlds
+├── <span style="color: blue; font-weight: bold;">src</span>
+│   ├── bash_interface.py
+│   ├── hand_control.py
+│   ├── main.py
+│   ├── move_person.py
+│   ├── pDetector_mediapipeGPU.py
+│   ├── pDetector_mediapipe.py
+│   ├── pDetector_MoveNet.py
+│   ├── qr_code_log.txt
+│   ├── QR_detection.py
+│   ├── QR_finder.py
+│   ├── save_pos.py
+│   ├── user_gui.py
+│   └── voice_control.py
+├── <span style="color: blue; font-weight: bold;">trained_models</span>
+│   ├── lite-model_movenet_singlepose_lightning_3.tflite
+│   ├── pose_landmarker_full.task
+│   ├── pose_landmarker_heavy.task
+│   ├── pose_landmarker_lite.task
+│   └── vosk-model-small-es-0.42
+│       ├── ...
+│       ...
+└── <span style="color: blue; font-weight: bold;">worlds</span>
     ├── campo.world
     ├── casa2_persona.world
     ├── casa2.world
@@ -274,7 +274,8 @@ proyecto_servicios
     ├── casa_grande.world
     ├── empty_person.world
     └── person_world.world
-```
+</pre>
+
 
 1. En la carpeta /launch se encuentran todos los ficheros .launch implementados. Estos .launch son lanzados de manera automática por el fichero run.sh pero pueden ser lanzados independientemente mediante el paquete de ROS, roslaunch:
 ```sh
