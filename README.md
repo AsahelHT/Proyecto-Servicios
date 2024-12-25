@@ -156,6 +156,7 @@ Para usar este paquete se ha implementado un fichero run.sh que permite lanzar l
    + Alternativamente, mediante la interfaz visual (botón shutdown), la interfaz de comandos (escribiendo apagar) o mediante comando por voz (diciendo "adiós" o "apagar"), se cerrará la aplicación.
    + Si algun proceso no se cierra correctamente, simplemente se debe cerrar la terminal o abortar el proceso en la misma mediante CTRL + C.
 
+#### Modficiación del entorno de simulación
 Para cambiar el entorno de simulación de Gazebo a uno diferente del establecido por defecto existen dos opciones:
 
    1. Para poder lanzarlo mediante el run.sh:
