@@ -105,61 +105,61 @@ Para usar este paquete se ha implementado un fichero run.sh que permite lanzar l
    ./run.sh <option> <move_person> <rviz>
    ```
 
-      + Las opciones admitidas son las siguientes:
-         * minimal:
-            ```sh
-               ./run.sh minimal
-            ```
-            Se lanzan los nodos:
-               - Deteccion de personas
-               - Interfaz por línea de comandos
-               - Nodo principal (main)
+   + Las opciones admitidas son las siguientes:
+      1. minimal:
+         ```sh
+            ./run.sh minimal
+         ```
+         Se lanzan los nodos:
+            - Deteccion de personas
+            - Interfaz por línea de comandos
+            - Nodo principal (main)
 
-         * light:
-            ```sh
-               ./run.sh light
-            ```
-            Se lanzan los nodos:
-               - Deteccion de personas
-               - Control de voz
-               - Interfaz visual
-               - Nodo principal (main)
+      2. light:
+         ```sh
+            ./run.sh light
+         ```
+         Se lanzan los nodos:
+            - Deteccion de personas
+            - Control de voz
+            - Interfaz visual
+            - Nodo principal (main)
 
-         * heavy:
-            ```sh
-               ./run.sh heavy
-            ```
-            Se lanzan todos los nodos:
-               - Deteccion de personas
-               - Control de voz
-               - Control por gestos
-               - Interfaz visual
-               - Interfaz por línea de comandos
-               - Nodo principal (main)
+      3. heavy:
+         ```sh
+            ./run.sh heavy
+         ```
+         Se lanzan todos los nodos:
+            - Deteccion de personas
+            - Control de voz
+            - Control por gestos
+            - Interfaz visual
+            - Interfaz por línea de comandos
+            - Nodo principal (main)
 
-         * qr:
-            ```sh
-               ./run.sh qr
-            ```
-            Se lanza un módulo independiente para recorrer un entorno detectando QRs y guardar las posiciones donde se ha detectado el QR para poder navegar posteriormente hacia allí.
+      4. qr:
+         ```sh
+            ./run.sh qr
+         ```
+         Se lanza un módulo independiente para recorrer un entorno detectando QRs y guardar las posiciones donde se ha detectado el QR para poder navegar posteriormente hacia allí.
 
 
-      + El argumento move_person lanzará el nodo de movimiento de persona en un entorno simulado de gazebo:
-            ```sh
-               ./run.sh <option> move_person
-            ```
-      + El argumento rviz lanzará el entorno de visualización rviz:
-            ```sh
-               ./run.sh <option> <move_person> rviz
+   + El argumento move_person lanzará el nodo de movimiento de persona en un entorno simulado de gazebo:
+         ```sh
+            ./run.sh <option> move_person
+         ```
+   + El argumento rviz lanzará el entorno de visualización rviz:
+         ```sh
+            ./run.sh <option> <move_person> rviz
             ```
 
-   3. Si se desea lanzar un nodo por separado se puede seguir el procedimiento habitual de ROS, mediante rosnode:
+3. Si se desea lanzar un nodo por separado se puede seguir el procedimiento habitual de ROS, mediante rosnode:
       Ejemplo, lanzar move_person sin usar run.sh. (Debe realizarse source <path_to_catkin_ws>/devel/setup.bash primero)
       ```sh
          rosrun proyecto_servicios move_person.py
       ```
    
-   4. Para cerrar la aplicación se puede presionar cualquier tecla en el terminal donde se ejecutó el fichero run.sh
+4. Para cerrar la aplicación se puede presionar cualquier tecla en el terminal donde se ejecutó el fichero run.sh
       + Alternativamente, mediante la interfaz visual (botón shutdown), la interfaz de comandos (escribiendo apagar) o mediante comando por voz (diciendo "adiós" o "apagar"), se cerrará la aplicación.
       + Si algun proceso no se cierra correctamente, simplemente se debe cerrar la terminal o abortar el proceso en la misma mediante CTRL + C.
 
