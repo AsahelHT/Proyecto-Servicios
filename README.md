@@ -92,32 +92,31 @@ Con estos pasos el paquete ya debería estar correctamente compilado y listo par
 <!-- USAGE EXAMPLES -->
 ## Uso
 
+### Simulación
 Para usar este paquete se ha implementado un fichero run.sh que permite lanzar la aplicación de manera cómoda y sencilla en simulación:
-
-1. Desde una terminal situada en la carpeta raiz del paquete: 
-```sh
-   ./run.sh
-```
-   Esto lanzará el paquete con los valores de configuración por defecto.
-
-2. Este fichero admite argumentos de ejecución al lanzarlo desde terminal:
+* Desde una terminal situada en la carpeta raiz del paquete: 
    ```sh
-   ./run.sh <option> <move_person> <rviz>
+      ./run.sh
    ```
+      Esto lanzará el paquete con los valores de configuración por defecto.
 
-   + Las opciones admitidas son las siguientes:
-      1. minimal:
+   Este fichero admite argumentos de ejecución al lanzarlo desde terminal:
+      ```sh
+      ./run.sh <option> <move_person> <rviz>
+      ```
+   Los argumentos admitidos son los siguientes
+      1. Opcion minimal:
          ```sh
-            ./run.sh minimal
+            ./run.sh minimal <move_person> <rviz>
          ```
          Se lanzan los nodos:
             - Deteccion de personas
             - Interfaz por línea de comandos
             - Nodo principal (main)
 
-      2. light:
+      2. Opcion light:
          ```sh
-            ./run.sh light
+            ./run.sh light <move_person> <rviz>
          ```
          Se lanzan los nodos:
             - Deteccion de personas
@@ -125,9 +124,9 @@ Para usar este paquete se ha implementado un fichero run.sh que permite lanzar l
             - Interfaz visual
             - Nodo principal (main)
 
-      3. heavy:
+      3. Opcion heavy:
          ```sh
-            ./run.sh heavy
+            ./run.sh heavy <move_person> <rviz>
          ```
          Se lanzan todos los nodos:
             - Deteccion de personas
@@ -137,32 +136,54 @@ Para usar este paquete se ha implementado un fichero run.sh que permite lanzar l
             - Interfaz por línea de comandos
             - Nodo principal (main)
 
-      4. qr:
+      4. Opcion qr:
          ```sh
-            ./run.sh qr
+            ./run.sh qr <move_person> <rviz>
          ```
          Se lanza un módulo independiente para recorrer un entorno detectando QRs y guardar las posiciones donde se ha detectado el QR para poder navegar posteriormente hacia allí.
 
 
-   + El argumento move_person lanzará el nodo de movimiento de persona en un entorno simulado de gazebo:
-         ```sh
-            ./run.sh <option> move_person
-         ```
-   + El argumento rviz lanzará el entorno de visualización rviz:
-         ```sh
-            ./run.sh <option> <move_person> rviz
+      5. El argumento move_person lanzará el nodo de movimiento de persona en un entorno simulado de gazebo:
+            ```sh
+               ./run.sh <option> move_person <rivz>
             ```
+      6. El argumento rviz lanzará el entorno de visualización rviz:
+            ```sh
+               ./run.sh <option> <move_person> rviz
+               ```
 
-3. Si se desea lanzar un nodo por separado se puede seguir el procedimiento habitual de ROS, mediante rosnode:
-      Ejemplo, lanzar move_person sin usar run.sh. (Debe realizarse source <path_to_catkin_ws>/devel/setup.bash primero)
-      ```sh
-         rosrun proyecto_servicios move_person.py
-      ```
+* Si se desea lanzar un nodo por separado se puede seguir el procedimiento habitual de ROS, mediante rosnode:
+   Ejemplo, lanzar move_person sin usar run.sh. (Debe realizarse source <path_to_catkin_ws>/devel/setup.bash primero)
+   ```sh
+      rosrun proyecto_servicios move_person.py
+   ```
    
-4. Para cerrar la aplicación se puede presionar cualquier tecla en el terminal donde se ejecutó el fichero run.sh
-      + Alternativamente, mediante la interfaz visual (botón shutdown), la interfaz de comandos (escribiendo apagar) o mediante comando por voz (diciendo "adiós" o "apagar"), se cerrará la aplicación.
-      + Si algun proceso no se cierra correctamente, simplemente se debe cerrar la terminal o abortar el proceso en la misma mediante CTRL + C.
+* Para cerrar la aplicación se puede presionar cualquier tecla en el terminal donde se ejecutó el fichero run.sh
+   + Alternativamente, mediante la interfaz visual (botón shutdown), la interfaz de comandos (escribiendo apagar) o mediante comando por voz (diciendo "adiós" o "apagar"), se cerrará la aplicación.
+   + Si algun proceso no se cierra correctamente, simplemente se debe cerrar la terminal o abortar el proceso en la misma mediante CTRL + C.
 
+Para cambiar el entorno de simulación de Gazebo a uno diferente del establecido por defecto existen dos opciones:
+
+   1. Para poder lanzarlo mediante el run.sh:
+      Dentro del fichero world.launch, cambiar el path que hace referencia al fichero del mundo .world deseado:
+       <arg name="world_file" default="$(find proyecto_servicios)/worlds/<.world deseado>"/>
+
+   2. Lanzar world.launch de manera independiente y pasar el .world deseado como argumento:
+      ```sh
+      roslaunch proyecto_servicios world.launch world_file:=<path to .world>
+      ```
+Para lanzar el stack de navegación en un entorno diferente al establecido por defecto existen dos opciones:
+   
+   1. Para poder lanzarlo mediante el run.sh:
+      Dentro de navigation.launch modificar la siguiente linea para que haga referencia al fichero .yaml del mapa que se quiere usar:
+   <arg name="map_file" default="$(find proyecto_servicios)/nav_maps/mapa_campo.yaml" />
+
+   2. Lanzar navigation.launch de manera independiente y pasar el mapa deseado como argumento:
+      ```sh
+      roslaunch proyecto_servicios navigation.launch map_file:=<path to .yaml>
+      ```
+
+### Robot real
 Si se pretende usar el paquete conjuntamente con el Turtlebot2 real, basta con lanzar la colección de nodos deseados mediante sus respectivos .launch en la máquina conectada al robot:
 1. minimal:
 ```sh
@@ -177,17 +198,6 @@ Si se pretende usar el paquete conjuntamente con el Turtlebot2 real, basta con l
    roslaunch proyecto_servicios nodes_heavy.launch
 ```
 
-Para cambiar el entorno de simulación de Gazebo a uno diferente del establecido por defecto existen dos opciones:
-
-   1. Para poder lanzarlo mediante el run.sh:
-      Dentro del fichero world.launch, cambiar el path que hace referencia al fichero del mundo .world deseado:
-       <arg name="world_file" default="$(find proyecto_servicios)/worlds/<.world deseado>"/>
-
-   2. Lanzar world.launch de manera independiente y pasar el .world deseado como argumento:
-      ```sh
-      roslaunch proyecto_servicios world.launch world_file:=<path to .world>
-      ```
-
 Para lanzar el stack de navegación en un entorno diferente al establecido por defecto existen dos opciones:
    
    1. Para poder lanzarlo mediante el run.sh:
@@ -198,8 +208,6 @@ Para lanzar el stack de navegación en un entorno diferente al establecido por d
       ```sh
       roslaunch proyecto_servicios navigation.launch map_file:=<path to .yaml>
       ```
-
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Workspace
