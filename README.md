@@ -106,7 +106,7 @@ Para usar este paquete se ha implementado un fichero run.sh que permite lanzar l
    ```
 
       + Las opciones admitidas son las siguientes:
-         1. minimal:
+         * minimal:
             ```sh
                ./run.sh minimal
             ```
@@ -115,7 +115,7 @@ Para usar este paquete se ha implementado un fichero run.sh que permite lanzar l
                - Interfaz por línea de comandos
                - Nodo principal (main)
 
-         2. light:
+         * light:
             ```sh
                ./run.sh light
             ```
@@ -125,7 +125,7 @@ Para usar este paquete se ha implementado un fichero run.sh que permite lanzar l
                - Interfaz visual
                - Nodo principal (main)
 
-         3. heavy:
+         * heavy:
             ```sh
                ./run.sh heavy
             ```
@@ -137,7 +137,7 @@ Para usar este paquete se ha implementado un fichero run.sh que permite lanzar l
                - Interfaz por línea de comandos
                - Nodo principal (main)
 
-         4. qr:
+         * qr:
             ```sh
                ./run.sh qr
             ```
