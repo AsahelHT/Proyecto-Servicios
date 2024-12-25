@@ -1,6 +1,5 @@
 <launch>
   
-
   <arg name="tf_model" default="$(find proyecto_servicios)/trained_models" />
   <arg name="voice_model" default="$(find proyecto_servicios)/trained_models" />
   <arg name="movenet" default="false" />

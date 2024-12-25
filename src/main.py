@@ -72,7 +72,6 @@ SHUTDOWN_ST = "shutdown_state"
 BASE_ST = "base_state"
 
 # PATH
-
 WAYPOINT_PATH = "/home/asahel/ROS_WS/src/proyecto_servicios/src/qr_code_log.txt"
 # Parámetros de control
 CENTER_TOLERANCE_X = 50  # Tolerancia en píxeles para el eje X
@@ -84,19 +83,16 @@ MAX_VSPEED = 0.5
 MAX_WSPEED = 0.5
 
 states = [IDLE_ST, FOLLOW_ST, MOVE_ST, SHUTDOWN_ST]
-rooms = r"^(.*)\b(cocina|wc|salon|habitación|estacion)\b$"
+rooms = r"^(.*)\b(cocina|wc|salon|habitacion|estacion)\b$"
 
 # Definir los waypoints a los que el robot debe moverse
 def_waypoints = [
     ['habitacion', (-0.3, 4.4), (0.0, 0.0, 0.0, 1.0)],  # Nombre, posición, orientación
     ['estacion', (-2.06, 5.82), (0.0, 0.0, 0.0, 1.0)],  # Ejemplo con otro punto
-    ['baño', (-3.6, 4.6), (0.0, 0.0, 0, 1.0)],
+    ['wc', (-3.6, 4.6), (0.0, 0.0, 0, 1.0)],
     ['salon', (-3.6, 0.7), (0.0, 0.0, 0, 1.0)],
     ['cocina', (0.0, 1.6), (0.0, 0.0, 0, 1.0)],
 ]
-
-
-
 
 """ ******************************************************************************************************
    Clase para el movimiento a un waypoint.
@@ -119,6 +115,9 @@ class MoveState(State):
             rospy.logerr("'move_base' server not available")
 
     def update_waypoints_from_file(self, filename, waypoints):
+        """
+        Funcion para leer el fichero de waypoints y actualizar la lista
+        """
         with open(filename, 'r') as file:
             lines = file.readlines()
 
@@ -160,24 +159,26 @@ class MoveState(State):
             self.cmd = msg.data
 
     def execute(self, userdata):
-        # Obtener el waypoint a mover
+        
         self.log_msg = None
         self.subCmd = rospy.Subscriber(TOPIC_COMMAND, String , self.cmd_callback)
         self.timer = rospy.Timer(rospy.Duration(10), self.publish_message)
+
+        # Obtiene el waypoint deseado
         self.update_waypoints_from_file(WAYPOINT_PATH, def_waypoints)
         waypoint_name = userdata.input_data
         print(def_waypoints)
         waypoint = None
         waypoint = next((w for w in def_waypoints if w[0] == waypoint_name), None)
         
+        # Si no existe, se cancela la orden de movimiento
         if waypoint == None:
             self.log_pub.publish(f"[INFO] MOVE STATE: {waypoint_name} not found")
             self.timer.shutdown()
             return 'aborted'
                        
-        #waypoint in enumerate(waypoints)
         
-
+        # Si el cliente move_base esta activo
         if self.clientAvailable:
             goal_pose = MoveBaseGoal()
             goal_pose.target_pose.header.frame_id = 'map'
@@ -258,7 +259,7 @@ class FollowPerson(State):
 
                 self.dynamicDist = 0
                 self.last_error = 0
-                self.followPerson = True
+                self.followPerson = False
                 userdata.output_data = None
 
                 if self.cmd in self.states:
@@ -282,7 +283,10 @@ class FollowPerson(State):
 
     def person_pose_callback(self, msg):
         """Callback para recibir la posición del pixel desde /person_pose."""
-
+        if self.cmd == STOP_FOLLOW_CMD or self.cmd in self.states or MOVE_ST in self.cmd:
+            self.subPerson.unregister()
+            
+        
         error_x = msg.x
         pixel_depth = msg.y
         
@@ -338,7 +342,6 @@ class FollowPerson(State):
             self.last_twist.angular.z = twist.angular.z
 
             self.cmd_vel_pub.publish(twist)
-
 
 
 """ ******************************************************************************************************
@@ -469,14 +472,14 @@ def kill_run_launch():
 def main():
     rospy.init_node("main")
     log_pub = rospy.Publisher(TOPIC_LOGS, String, queue_size=10)
-    # Crear un contenedor de concurrencia
+    # Crea una maquina de estados mediante SMACH
     sm = StateMachine(outcomes=['end'])
     
     log_pub.publish("[EVENT]: STARTING APP")
     sm.userdata.data = None
-    
+
     with sm:
-               
+        # Estado IdleWait, el robot espera a recibir un comando               
         StateMachine.add('IdleWait', 
             IdleWait(), 
             transitions={
@@ -487,6 +490,7 @@ def main():
             remapping={'input_data':'data',
                        'output_data':'data'})
 
+        # Estado FollowPerson, el robot sigue a una persona
         StateMachine.add('FollowPerson', 
             FollowPerson(), 
             transitions={
@@ -494,6 +498,7 @@ def main():
             remapping={'input_data':'data',
                        'output_data':'data'})
         
+        # Estado MoveState, el robot se mueve hacia una posicion
         StateMachine.add('MoveState', 
             MoveState(), 
             transitions={
@@ -509,7 +514,7 @@ def main():
     if res == 'end':
         stop_all_nodes()
         kill_run_launch()
-        rospy.signal_shutdown()
+        rospy.signal_shutdown('exit')
 
     rospy.spin()   
 

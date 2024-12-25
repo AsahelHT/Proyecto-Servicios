@@ -2,7 +2,7 @@
 
 # Comprobar que se ha pasado al menos un argumento
 if [ $# -eq 0 ]; then
-  echo "Use: $0  <option> <rviz> <move_person>"
+  echo "Use: $0  <option> <move_person> <rviz>"
   echo "Options:"
   echo "  heavy - Launches everything"
   echo "  light - Launches navigation, follow, voice control and GUI"
@@ -56,7 +56,7 @@ case "$MODE" in
     ;;
   qr)
     echo "Launching QR finder"
-    gnome-terminal --title="QR_FINDER" -- bash  -c "rosrun proyecto_servicios QR_finder.py" &
+    gnome-terminal --title="QR_FINDER" -- bash -c "rosrun proyecto_servicios QR_finder.py" &
     NODES_PID=$!
     ;;
   *)
@@ -68,7 +68,7 @@ esac
 
 if [ "$MOVEPERSON" == "move_person" ]; then
   echo "Executing move_person node..."
-  gnome-terminal -- bash --title="MOVE_PERSON" -c "rosrun proyecto_servicios move_person.py"
+  gnome-terminal --title="MOVE_PERSON" -- bash -c "rosrun proyecto_servicios move_person.py" &
 fi
 # Esperar a que el usuario presione una tecla
 echo "Press any key to stop all nodes and close terminals..."

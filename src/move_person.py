@@ -41,7 +41,7 @@ def get_initial_position():
 
 def move_object():
     """
-    Enviar el nuevo estado al servicio de Gazebo para mover el objeto.
+    Envia el nuevo estado al servicio de Gazebo para mover el objeto.
     """
     rospy.wait_for_service('/gazebo/set_model_state')
     try:
@@ -73,13 +73,13 @@ def on_press(key):
     global position
     try:
         if key.char == 'w':  # Adelante
-            position['x'] -= step_size
-        elif key.char == 's':  # Atrás
-            position['x'] += step_size
-        elif key.char == 'a':  # Izquierda
             position['y'] -= step_size
-        elif key.char == 'd':  # Derecha
+        elif key.char == 's':  # Atrás
             position['y'] += step_size
+        elif key.char == 'd':  # Izquierda
+            position['x'] -= step_size
+        elif key.char == 'a':  # Derecha
+            position['x'] += step_size
         move_object()
     except AttributeError:
         # Ignorar teclas especiales como Shift, Ctrl, etc.

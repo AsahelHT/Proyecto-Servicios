@@ -61,6 +61,7 @@ class MoveNetDetector:
             self.log_pub.publish("[VISION]: PERSON DETECTION: Camera OFF")
 
     def callback(self, rgb_msg, depth_msg):
+        # Callback que recibe las imagenes desde la camara
         rgb_image = self.bridge.imgmsg_to_cv2(rgb_msg, desired_encoding="bgr8")
         depth_image = self.bridge.imgmsg_to_cv2(depth_msg, desired_encoding="passthrough")
         self.detect_person(rgb_image, depth_image)
@@ -73,15 +74,18 @@ class MoveNetDetector:
         self.cmd = Point()
         self.cmd.x = -1
         self.cmd.y = -1
-
+        # Desde la imagen procesada mediante el metodo pose de mediapipe se extraen los landmarks, si existen
         if results.pose_landmarks:
             landmarks = results.pose_landmarks.landmark
+
+            # Se extraen los puntos deseados de la persona detectada (cadera)
             center_x, center_y, pixel_depth = self.extract_pose(landmarks, image, depth_image)
             
-            self.cmd.x = center_x - image.shape[1] // 2  # Error respecto al centro
+            # Error respecto al centro
+            self.cmd.x = center_x - image.shape[1] // 2  
+            # Profundidad del pixel deseado
             self.cmd.y = pixel_depth if np.isfinite(pixel_depth) else -1
-            #rospy.loginfo(f"Publishing: Error: {self.cmd.x}, Distance: {self.cmd.y}")
-            
+                        
             if self.show_img:
                 cv2.circle(image, (center_x, center_y), 5, (0, 0, 255), -1)
 
@@ -92,6 +96,7 @@ class MoveNetDetector:
                 cv2.imshow('Person Detection', image)
                 cv2.waitKey(1)
 
+        # Se publican como un tipo de dato Point
         self.cmd_pub.publish(self.cmd)
 
     def extract_pose(self, landmarks, image, depth_image):

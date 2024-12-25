@@ -31,7 +31,8 @@ class VoiceControl:
 
         self.is_active = True
         self.cafe_on = True
-
+        self.count_cafe = 0
+        self.run = True
         self.model_name = "vosk-model-small-es-0.42"
 
         self.model_path = rospy.get_param('~voice_model', "../trained_models")
@@ -133,7 +134,7 @@ class VoiceControl:
                            
                             comando_especifico = self.reconocer_comando()
 
-                            if self.cafe_on:
+                            if self.cafe_on and self.count_cafe < 5:
                                 tiempo_actual = time.time()
                                 if tiempo_actual - inicio >= intervalo:
                                     inicio = tiempo_actual  # Reinicia el temporizador
@@ -165,7 +166,7 @@ class VoiceControl:
                                 self.command_pub.publish(MOVE_ST + ":" + "estacion")
                             elif "qué" in accion or "un qué" in accion or "cómo" in accion or "que" in accion or "un que" in accion or "como" in accion:
                                 self.log_and_speak("Un cafe")
-                                self.cafe_on = False
+                                self.count_cafe += 1
                             elif "no mires" in accion or ("apaga" in accion and "camara" in accion):
                                 self.log_and_speak("De acuerdo, no miro.")
                                 self.log_pub.publish("[VOICE]: De acuerdo, no miro.")
@@ -189,7 +190,7 @@ class VoiceControl:
                                 rospy.loginfo("Comando no reconocido.")
                                 
 
-                    if "adiós" in comando_activacion:
+                    if "adiós" in comando_activacion or self.run:
                         self.log_and_speak("Adiós.")
                         self.log_pub.publish("[VOICE]: Adiós")
                         self.command_pub.publish(SHUTDOWN_ST)
