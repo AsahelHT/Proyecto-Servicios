@@ -95,7 +95,7 @@ Con estos pasos el paquete ya debería estar correctamente compilado y listo par
 ### Simulación
 + Para usar este paquete se ha implementado un fichero run.sh que permite lanzar la aplicación de manera cómoda y sencilla en simulación:
    Desde una terminal situada en la carpeta raiz del paquete: 
-   ``sh
+   ```sh
       ./run.sh
    ```
    Este fichero admite argumentos de ejecución al lanzarlo desde terminal:
