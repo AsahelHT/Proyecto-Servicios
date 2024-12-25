@@ -92,7 +92,7 @@ Con estos pasos el paquete ya debería estar correctamente compilado y listo par
 <!-- USAGE EXAMPLES -->
 ## Uso
 
-Para usar este paquete se ha implementado un fichero run.sh que permite lanzar la aplicación de manera cómoda y sencilla:
+Para usar este paquete se ha implementado un fichero run.sh que permite lanzar la aplicación de manera cómoda y sencilla en simulación:
 
 1. Desde una terminal situada en la carpeta raiz del paquete: 
 ```sh
@@ -137,6 +137,13 @@ Para usar este paquete se ha implementado un fichero run.sh que permite lanzar l
                - Interfaz por línea de comandos
                - Nodo principal (main)
 
+         4. qr:
+            ```sh
+               ./run.sh qr
+            ```
+            Se lanza un módulo independiente para recorrer un entorno detectando QRs y guardar las posiciones donde se ha detectado el QR para poder navegar posteriormente hacia allí.
+
+
       + El argumento move_person lanzará el nodo de movimiento de persona en un entorno simulado de gazebo:
             ```sh
                ./run.sh <option> move_person
@@ -145,9 +152,59 @@ Para usar este paquete se ha implementado un fichero run.sh que permite lanzar l
             ```sh
                ./run.sh <option> <move_person> rviz
             ```
+
+   3. Si se desea lanzar un nodo por separado se puede seguir el procedimiento habitual de ROS, mediante rosnode:
+      Ejemplo, lanzar move_person sin usar run.sh. (Debe realizarse source <path_to_catkin_ws>/devel/setup.bash primero)
+      ```sh
+         rosrun proyecto_servicios move_person.py
+      ```
+   
+   4. Para cerrar la aplicación se puede presionar cualquier tecla en el terminal donde se ejecutó el fichero run.sh
+      + Alternativamente, mediante la interfaz visual (botón shutdown), la interfaz de comandos (escribiendo apagar) o mediante comando por voz (diciendo "adiós" o "apagar"), se cerrará la aplicación.
+      + Si algun proceso no se cierra correctamente, simplemente se debe cerrar la terminal o abortar el proceso en la misma mediante CTRL + C.
+
+Si se pretende usar el paquete conjuntamente con el Turtlebot2 real, basta con lanzar la colección de nodos deseados mediante sus respectivos .launch en la máquina conectada al robot:
+1. minimal:
+```sh
+   roslaunch proyecto_servicios nodes_minimal.launch
+```
+2. light:
+```sh
+   roslaunch proyecto_servicios nodes_light.launch
+```
+3. heavy:
+```sh
+   roslaunch proyecto_servicios nodes_heavy.launch
+```
+
+Para cambiar el entorno de simulación de Gazebo a uno diferente del establecido por defecto existen dos opciones:
+
+   1. Para poder lanzarlo mediante el run.sh:
+      Dentro del fichero world.launch, cambiar el path que hace referencia al fichero del mundo .world deseado:
+       <arg name="world_file" default="$(find proyecto_servicios)/worlds/<.world deseado>"/>
+
+   2. Lanzar world.launch de manera independiente y pasar el .world deseado como argumento:
+      ```sh
+      roslaunch proyecto_servicios world.launch world_file:=<path to .world>
+      ```
+
+Para lanzar el stack de navegación en un entorno diferente al establecido por defecto existen dos opciones:
+   
+   1. Para poder lanzarlo mediante el run.sh:
+      Dentro de navigation.launch modificar la siguiente linea para que haga referencia al fichero .yaml del mapa que se quiere usar:
+   <arg name="map_file" default="$(find proyecto_servicios)/nav_maps/mapa_campo.yaml" />
+
+   2. Lanzar navigation.launch de manera independiente y pasar el mapa deseado como argumento:
+      ```sh
+      roslaunch proyecto_servicios navigation.launch map_file:=<path to .yaml>
+      ```
+
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Workspace
+
+El workspace del paquete está distribuido de la siguiente manera:
 
 ``` plaintext
 proyecto_servicios
@@ -214,8 +271,20 @@ proyecto_servicios
     ├── casa_grande.world
     ├── empty_person.world
     └── person_world.world
-
 ```
+
+1. En la carpeta /launch se encuentran todos los ficheros .launch implementados. Estos .launch son lanzados de manera automática por el fichero run.sh pero pueden ser lanzados independientemente mediante el paquete de ROS, roslaunch:
+```sh
+   roslaunch proyecto_servicios <launch file>
+```
+
+2. La carpeta /nav_maps contiene los mapas usados por el stack de navegación. Aquí deben situarse los mapas construidos.
+
+3. /obj_models contiene los modelos de Gazebo usados en el mampa por defecto.
+
+4. La carpeta /src contiene los códigos fuente que lanzan los distintos nodos y funcionalidades.
+
+5. 
 <!-- ACKNOWLEDGMENTS -->
 ## Participantes
 
