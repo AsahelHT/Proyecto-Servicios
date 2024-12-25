@@ -148,6 +148,8 @@ Para usar este paquete se ha implementado un fichero run.sh que permite lanzar l
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Workspace
+
+``` plaintext
 proyecto_servicios
 ├── CMakeLists.txt
 ├── launch
@@ -213,6 +215,7 @@ proyecto_servicios
     ├── empty_person.world
     └── person_world.world
 
+```
 <!-- ACKNOWLEDGMENTS -->
 ## Participantes
 
