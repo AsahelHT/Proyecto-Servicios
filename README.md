@@ -93,12 +93,11 @@ Con estos pasos el paquete ya debería estar correctamente compilado y listo par
 ## Uso
 
 ### Simulación
-Para usar este paquete se ha implementado un fichero run.sh que permite lanzar la aplicación de manera cómoda y sencilla en simulación:
-* Desde una terminal situada en la carpeta raiz del paquete: 
++ Para usar este paquete se ha implementado un fichero run.sh que permite lanzar la aplicación de manera cómoda y sencilla en simulación:
+Desde una terminal situada en la carpeta raiz del paquete: 
    ```sh
       ./run.sh
    ```
-      Esto lanzará el paquete con los valores de configuración por defecto.
 
    Este fichero admite argumentos de ejecución al lanzarlo desde terminal:
       ```sh
@@ -152,13 +151,13 @@ Para usar este paquete se ha implementado un fichero run.sh que permite lanzar l
                ./run.sh <option> <move_person> rviz
                ```
 
-* Si se desea lanzar un nodo por separado se puede seguir el procedimiento habitual de ROS, mediante rosnode:
++ Si se desea lanzar un nodo por separado se puede seguir el procedimiento habitual de ROS, mediante rosnode:
    Ejemplo, lanzar move_person sin usar run.sh. (Debe realizarse source <path_to_catkin_ws>/devel/setup.bash primero)
    ```sh
       rosrun proyecto_servicios move_person.py
    ```
    
-* Para cerrar la aplicación se puede presionar cualquier tecla en el terminal donde se ejecutó el fichero run.sh
++ Para cerrar la aplicación se puede presionar cualquier tecla en el terminal donde se ejecutó el fichero run.sh
    + Alternativamente, mediante la interfaz visual (botón shutdown), la interfaz de comandos (escribiendo apagar) o mediante comando por voz (diciendo "adiós" o "apagar"), se cerrará la aplicación.
    + Si algun proceso no se cierra correctamente, simplemente se debe cerrar la terminal o abortar el proceso en la misma mediante CTRL + C.
 
