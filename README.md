@@ -95,61 +95,56 @@ Con estos pasos el paquete ya debería estar correctamente compilado y listo par
 ### Simulación
 Para usar este paquete se ha implementado un fichero run.sh que permite lanzar la aplicación de manera cómoda y sencilla en simulación:
 
-+ Desde una terminal situada en la carpeta raiz del paquete: 
++ Desde una terminal situada en la carpeta raiz del paquete:
    ```sh
-      ./run.sh
+      ./run.sh <option> <move_person> <rviz>
    ```
-   * Este fichero admite argumentos de ejecución al lanzarlo desde terminal:
+   1. Opcion minimal:
       ```sh
-         ./run.sh <option> <move_person> <rviz>
+         ./run.sh minimal <move_person> <rviz>
       ```
-   * Los argumentos admitidos son los siguientes
-      1. Opcion minimal:
+      - Se lanzan los nodos:
+         - Deteccion de personas
+         - Interfaz por línea de comandos
+         - Nodo principal (main)
+
+   2. Opcion light:
+      ```sh
+         ./run.sh light <move_person> <rviz>
+      ```
+      - Se lanzan los nodos:
+         - Deteccion de personas
+         - Control de voz
+         - Interfaz visual
+         - Nodo principal (main)
+
+   3. Opcion heavy:
+      ```sh
+         ./run.sh heavy <move_person> <rviz>
+      ```
+      - Se lanzan todos los nodos:
+         - Deteccion de personas
+         - Control de voz
+         - Control por gestos
+         - Interfaz visual
+         - Interfaz por línea de comandos
+         - Nodo principal (main)
+
+   4. Opcion qr:
+      ```sh
+         ./run.sh qr <move_person> <rviz>
+      ```
+      Se lanza un módulo independiente para recorrer un entorno detectando QRs y guardar las posiciones donde se ha detectado el QR para poder navegar posteriormente hacia allí.
+
+
+   5. El argumento move_person lanzará el nodo de movimiento de persona en un entorno simulado de gazebo:
          ```sh
-            ./run.sh minimal <move_person> <rviz>
+            ./run.sh <option> move_person <rivz>
          ```
-         - Se lanzan los nodos:
-            - Deteccion de personas
-            - Interfaz por línea de comandos
-            - Nodo principal (main)
-
-      2. Opcion light:
+   6. El argumento rviz lanzará el entorno de visualización rviz:
          ```sh
-            ./run.sh light <move_person> <rviz>
+            ./run.sh <option> <move_person> rviz
          ```
-         - Se lanzan los nodos:
-            - Deteccion de personas
-            - Control de voz
-            - Interfaz visual
-            - Nodo principal (main)
-
-      3. Opcion heavy:
-         ```sh
-            ./run.sh heavy <move_person> <rviz>
-         ```
-         - Se lanzan todos los nodos:
-            - Deteccion de personas
-            - Control de voz
-            - Control por gestos
-            - Interfaz visual
-            - Interfaz por línea de comandos
-            - Nodo principal (main)
-
-      4. Opcion qr:
-         ```sh
-            ./run.sh qr <move_person> <rviz>
-         ```
-         Se lanza un módulo independiente para recorrer un entorno detectando QRs y guardar las posiciones donde se ha detectado el QR para poder navegar posteriormente hacia allí.
-
-
-      5. El argumento move_person lanzará el nodo de movimiento de persona en un entorno simulado de gazebo:
-            ```sh
-               ./run.sh <option> move_person <rivz>
-            ```
-      6. El argumento rviz lanzará el entorno de visualización rviz:
-            ```sh
-               ./run.sh <option> <move_person> rviz
-            ```
 
 + Si se desea lanzar un nodo por separado se puede seguir el procedimiento habitual de ROS, mediante rosnode:
    Ejemplo, lanzar move_person sin usar run.sh. (Debe realizarse source <path_to_catkin_ws>/devel/setup.bash primero)
