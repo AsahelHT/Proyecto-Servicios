@@ -94,14 +94,13 @@ Con estos pasos el paquete ya debería estar correctamente compilado y listo par
 
 ### Simulación
 + Para usar este paquete se ha implementado un fichero run.sh que permite lanzar la aplicación de manera cómoda y sencilla en simulación:
-Desde una terminal situada en la carpeta raiz del paquete: 
-   ```sh
+   Desde una terminal situada en la carpeta raiz del paquete: 
+   ``sh
       ./run.sh
    ```
-
    Este fichero admite argumentos de ejecución al lanzarlo desde terminal:
       ```sh
-      ./run.sh <option> <move_person> <rviz>
+         ./run.sh <option> <move_person> <rviz>
       ```
    Los argumentos admitidos son los siguientes
       1. Opcion minimal:
@@ -149,7 +148,7 @@ Desde una terminal situada en la carpeta raiz del paquete:
       6. El argumento rviz lanzará el entorno de visualización rviz:
             ```sh
                ./run.sh <option> <move_person> rviz
-               ```
+            ```
 
 + Si se desea lanzar un nodo por separado se puede seguir el procedimiento habitual de ROS, mediante rosnode:
    Ejemplo, lanzar move_person sin usar run.sh. (Debe realizarse source <path_to_catkin_ws>/devel/setup.bash primero)
@@ -169,7 +168,7 @@ Para cambiar el entorno de simulación de Gazebo a uno diferente del establecido
 
    2. Lanzar world.launch de manera independiente y pasar el .world deseado como argumento:
       ```sh
-      roslaunch proyecto_servicios world.launch world_file:=<path to .world>
+         roslaunch proyecto_servicios world.launch world_file:=<path to .world>
       ```
 Para lanzar el stack de navegación en un entorno diferente al establecido por defecto existen dos opciones:
    
@@ -179,7 +178,7 @@ Para lanzar el stack de navegación en un entorno diferente al establecido por d
 
    2. Lanzar navigation.launch de manera independiente y pasar el mapa deseado como argumento:
       ```sh
-      roslaunch proyecto_servicios navigation.launch map_file:=<path to .yaml>
+         roslaunch proyecto_servicios navigation.launch map_file:=<path to .yaml>
       ```
 
 ### Robot real
