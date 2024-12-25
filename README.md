@@ -89,26 +89,129 @@ Con estos pasos el paquete ya debería estar correctamente compilado y listo par
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-
 <!-- USAGE EXAMPLES -->
-## Uso (WIP)
+## Uso
 
-Para usar este paquete es conveniente seguir estos pasos, cada uno en una terminal diferente (es posible que se necesite hacer, desde el directorio raiz del Workspace de catkin, source devel/setup.bash, al abrir cada terminal):
+Para usar este paquete se ha implementado un fichero run.sh que permite lanzar la aplicación de manera cómoda y sencilla:
 
-1. Lanzar simulación en gazebo:
+1. Desde una terminal situada en la carpeta raiz del paquete: 
+```sh
+   ./run.sh
+```
+   Esto lanzará el paquete con los valores de configuración por defecto.
+
+2. Este fichero admite argumentos de ejecución al lanzarlo desde terminal:
    ```sh
-   roslaunch proyecto_servicios person_world.launch 
+   ./run.sh <option> <move_person> <rviz>
    ```
-2. Lanzar nodos de control visual:
-   ```sh
-   roslaunch proyecto_servicios visual_control.launch
-   ```
-3. Enviar mensaje de "Start" al robot:
-   ```sh
-   rostopic pub /robot_command std_msgs/String "start_follow"
-   ```
+
+      + Las opciones admitidas son las siguientes:
+         1. minimal:
+            ```sh
+               ./run.sh minimal
+            ```
+            Se lanzan los nodos:
+               - Deteccion de personas
+               - Interfaz por línea de comandos
+               - Nodo principal (main)
+
+         2. light:
+            ```sh
+               ./run.sh light
+            ```
+            Se lanzan los nodos:
+               - Deteccion de personas
+               - Control de voz
+               - Interfaz visual
+               - Nodo principal (main)
+
+         3. heavy:
+            ```sh
+               ./run.sh heavy
+            ```
+            Se lanzan todos los nodos:
+               - Deteccion de personas
+               - Control de voz
+               - Control por gestos
+               - Interfaz visual
+               - Interfaz por línea de comandos
+               - Nodo principal (main)
+
+      + El argumento move_person lanzará el nodo de movimiento de persona en un entorno simulado de gazebo:
+            ```sh
+               ./run.sh <option> move_person
+            ```
+      + El argumento rviz lanzará el entorno de visualización rviz:
+            ```sh
+               ./run.sh <option> <move_person> rviz
+            ```
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+## Workspace
+proyecto_servicios
+├── CMakeLists.txt
+├── launch
+│   ├── navigation.launch
+│   ├── nodes_heavy.launch
+│   ├── nodes_light.launch
+│   ├── nodes_minimal.launch
+│   ├── person_world.launch
+│   └── world.launch
+├── nav_maps
+│   ├── mapa_aula.pgm
+│   ├── mapa_aula.yaml
+│   ├── mapa_campo.pgm
+│   └── mapa_campo.yaml
+├── obj_models
+│   ├── person_walking
+│   │   ├── ...
+│   │   ...
+│   ├── qr_cocina
+│   │   ├── ...
+│   │   ...
+│   ├── qr_habitacion
+│   │   ├── ...
+│   │   ...
+│   ├── qr_salon
+│   │   ├── ...
+│   │   ...
+│   └── qr_wc
+│       ├── ...
+│       ...
+├── package.xml
+├── README.md
+├── requirements.txt
+├── run.sh
+├── src
+│   ├── bash_interface.py
+│   ├── hand_control.py
+│   ├── main.py
+│   ├── move_person.py
+│   ├── pDetector_mediapipeGPU.py
+│   ├── pDetector_mediapipe.py
+│   ├── pDetector_MoveNet.py
+│   ├── qr_code_log.txt
+│   ├── QR_detection.py
+│   ├── QR_finder.py
+│   ├── save_pos.py
+│   ├── user_gui.py
+│   └── voice_control.py
+├── trained_models
+│   ├── lite-model_movenet_singlepose_lightning_3.tflite
+│   ├── pose_landmarker_full.task
+│   ├── pose_landmarker_heavy.task
+│   ├── pose_landmarker_lite.task
+│   └── vosk-model-small-es-0.42
+│       ├── ...
+│       ...
+└── worlds
+    ├── campo.world
+    ├── casa2_persona.world
+    ├── casa2.world
+    ├── casa3.world
+    ├── casa_grande.world
+    ├── empty_person.world
+    └── person_world.world
 
 <!-- ACKNOWLEDGMENTS -->
 ## Participantes
