@@ -61,10 +61,7 @@ Para descargar los fuentes de los diversos repositorios necesarios de manera aut
 3. Workspace de catkin previamente creado: [http://wiki.ros.org/catkin/Tutorials/create_a_workspace](http://wiki.ros.org/catkin/Tutorials/create_a_workspace)
 4. Gazebo: [https://classic.gazebosim.org/tutorials?tut=install_ubuntu](https://classic.gazebosim.org/tutorials?tut=install_ubuntu) 
 5. Mediapipe: [https://pypi.org/project/mediapipe/](https://pypi.org/project/mediapipe/)
-6. Dependencias de python:
-   ```sh
-   pip install -r requirements.txt
-   ```
+
    
 ### Instalación
 
@@ -76,7 +73,12 @@ Para instalar el paquete proyecto_servicios:
    ```
 2. Cambiar el nombre del directorio descargado a proyecto_servicios (sólo si tiene otro nombre, como por ejemplo: proyecto_servicios-master)
 
-3. Desde el directorio raiz del WS de catkin:
+3. Dependencias de Python:
+   ```sh
+   pip install -r requirements.txt
+   ```
+
+4. Desde el directorio raiz del WS de catkin:
    ```sh
    # Compila el paquete de ROS
    catkin build proyecto_servicios
@@ -99,7 +101,7 @@ Para usar este paquete se ha implementado un fichero run.sh que permite lanzar l
    ```sh
       ./run.sh <option> <move_person> <rviz>
    ```
-   1. Opcion minimal:
+   1. Opción minimal:
       ```sh
          ./run.sh minimal <move_person> <rviz>
       ```
@@ -108,7 +110,7 @@ Para usar este paquete se ha implementado un fichero run.sh que permite lanzar l
          - Interfaz por línea de comandos
          - Nodo principal (main)
 
-   2. Opcion light:
+   2. Opción light:
       ```sh
          ./run.sh light <move_person> <rviz>
       ```
@@ -118,7 +120,7 @@ Para usar este paquete se ha implementado un fichero run.sh que permite lanzar l
          - Interfaz visual
          - Nodo principal (main)
 
-   3. Opcion heavy:
+   3. Opción heavy:
       ```sh
          ./run.sh heavy <move_person> <rviz>
       ```
@@ -130,7 +132,7 @@ Para usar este paquete se ha implementado un fichero run.sh que permite lanzar l
          - Interfaz por línea de comandos
          - Nodo principal (main)
 
-   4. Opcion qr:
+   4. Opción qr:
       ```sh
          ./run.sh qr <move_person> <rviz>
       ```
@@ -288,7 +290,7 @@ El workspace del paquete está distribuido de la siguiente manera:
 
 5. En /trained_models se incluyen los modelos y dependencias necesarias para poder usar el reconocmiento de voz y diferentes métodos de detección de personas (no necesarios si se está usando Mediapipe por defecto)
 
-6. En /worlds contiene los ficheros .world que utiliza Gazebo para la simulación. Por defecto se lanza en simulación casa3.world.
+6. En /worlds contiene los ficheros .world que utiliza Gazebo para la simulación. Por defecto se lanza la simulación casa3.world.
 
 <!-- ACKNOWLEDGMENTS -->
 ## Participantes

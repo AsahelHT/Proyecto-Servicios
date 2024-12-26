@@ -190,7 +190,7 @@ class VoiceControl:
                                 rospy.loginfo("Comando no reconocido.")
                                 
 
-                    if "adiós" in comando_activacion or self.run:
+                    if "adiós" in comando_activacion or self.run == False:
                         self.log_and_speak("Adiós.")
                         self.log_pub.publish("[VOICE]: Adiós")
                         self.command_pub.publish(SHUTDOWN_ST)
