@@ -20,7 +20,7 @@ EDGES = {
     (6, 12): 'c', (11, 12): 'y', (11, 13): 'm', (13, 15): 'm', (12, 14): 'c', (14, 16): 'c'
 }
 
-class MoveNetDetector:
+class MediapipeDetector:
     def __init__(self):
         # Cargar modelo MoveNet
         self.mp_pose = mp.solutions.pose
@@ -112,5 +112,5 @@ class MoveNetDetector:
         return pixel_x, pixel_y, pixel_depth
 
 rospy.init_node('Person_Detector')
-cd = MoveNetDetector()
+cd = MediapipeDetector()
 rospy.spin()

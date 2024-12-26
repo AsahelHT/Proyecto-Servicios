@@ -160,24 +160,25 @@ class GestureDetector:
             return gesture
         
         """
-        Gesto dejar de seguir .|. (DEJAR DE SEGUIR)
+        Gesto dejar de seguir 'n' (DEJAR DE SEGUIR)
         """
 
         # Comprobar si el dedo medio está extendido
-        middle_extended = self.is_finger_extended_upwards(hand_landmarks.landmark, *MIDDLE)
+        index_extended = self.is_finger_extended_upwards(hand_landmarks.landmark, *INDEX)
+        pinky_extended = self.is_finger_extended_upwards(hand_landmarks.landmark, *PINKY)
         
         # Comprobar si los demás dedos están recogidos
-        index_retracted = not self.is_finger_extended_upwards(hand_landmarks.landmark, *INDEX)
+        middle_retracted = not self.is_finger_extended_upwards(hand_landmarks.landmark, *MIDDLE)
         ring_retracted = not self.is_finger_extended_upwards(hand_landmarks.landmark, *RING)
-        pinky_retracted = not self.is_finger_extended_upwards(hand_landmarks.landmark, *PINKY)
+        
         thumb_retracted = hand_landmarks.landmark[THUMB[0]].x > hand_landmarks.landmark[THUMB[3]].x
 
-        if middle_extended and index_retracted and ring_retracted and pinky_retracted:
+        if index_extended and middle_retracted and ring_retracted and pinky_extended:
             gesture = STOP_FOLLOW_CMD
             return gesture
         
         """
-        Gesto dejar de seguir O (RESET)
+        Gesto reset distancia O (RESET)
         """
 
         thumb_tip = hand_landmarks.landmark[THUMB[0]]
